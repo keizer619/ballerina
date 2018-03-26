@@ -8,18 +8,18 @@ Any changes that break backwards compatibility such as syntax changes. Porting c
 Explain how to update this specific version. Specify about backward compatibility with previous components versions
 
 # Improvements
-- ## Language & Runtime
+## Language & Runtime
   - improvement1
   - improvement2
-- ## Standard Library
-- ## Build & Package Management
-- ## IDEs & Language Server
-- ## Ballerina for Java
-- ## Ballerina Sidecar
-- ## Ballerina API Gateway
-- ## Ballerina Message Broker
-- ## Ballerina Transaction Coordinator
-- ## Ballerina Observability
+## Standard Library
+## Build & Package Management
+## IDEs & Language Server
+## Ballerina for Java
+## Ballerina Sidecar
+## Ballerina API Gateway
+## Ballerina Message Broker
+## Ballerina Transaction Coordinator
+## Ballerina Observability
 
 # Bug Fixes 
 Link to the Github issues filtering for all the components
