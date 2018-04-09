@@ -269,17 +269,17 @@ public class Generator {
                 parameters.add(variable);
             }
         }
+    if (functionNode.getReturnTypeNode() != null) {
+        BLangVariable returnParam = new BLangVariable();
+        returnParam.typeNode = functionNode.getReturnTypeNode();
+        String dataType = type(returnParam);
+        if (!dataType.equals("null")) {
+            String desc = returnParamAnnotation(functionNode);
+            Variable variable = new Variable("", dataType, desc);
+            returnParams.add(variable);
+        }
 
-        // Iterate through the return types
-//        if (functionNode.getReturnParameters().size() > 0) {
-//            for (int i = 0; i < functionNode.getReturnParameters().size(); i++) {
-//                BLangVariable returnParam = functionNode.getReturnParameters().get(i);
-//                String dataType = type(returnParam);
-//                String desc = returnParamAnnotation(functionNode, i);
-//                Variable variable = new Variable(returnParam.getName().value, dataType, desc);
-//                returnParams.add(variable);
-//            }
-//        }
+    }
         return new FunctionDoc(functionName, description(functionNode), new ArrayList<>(), parameters, returnParams);
     }
 
@@ -435,22 +435,28 @@ public class Generator {
     /**
      * Get description annotation of the return parameter.
      * @param node parent node.
-     * @param returnTypeIndex The index of the return type.
      * @return description of the return parameter.
      */
-    public static String returnParamAnnotation(BLangNode node, int returnTypeIndex) {
-        int currentReturnAnnotationIndex = 0;
+    public static String returnParamAnnotation(BLangNode node) {
         for (AnnotationAttachmentNode annotation : getAnnotationAttachments(node)) {
             BLangRecordLiteral bLangRecordLiteral = (BLangRecordLiteral) annotation.getExpression();
             if (bLangRecordLiteral.getKeyValuePairs().size() != 1) {
                 continue;
             }
             if (annotation.getAnnotationName().getValue().equals("Return")) {
-                if (currentReturnAnnotationIndex == returnTypeIndex) {
-                    BLangExpression bLangLiteral = bLangRecordLiteral.getKeyValuePairs().get(0).getValue();
-                    return bLangLiteral.toString();
-                }
-                currentReturnAnnotationIndex++;
+                BLangExpression bLangLiteral = bLangRecordLiteral.getKeyValuePairs().get(0).getValue();
+                return bLangLiteral.toString();
+            }
+        }
+
+        for (AnnotationAttachmentNode annotation : ((BLangFunction) node).getReturnTypeAnnotationAttachments()) {
+            BLangRecordLiteral bLangRecordLiteral = (BLangRecordLiteral) annotation.getExpression();
+            if (bLangRecordLiteral.getKeyValuePairs().size() != 1) {
+                continue;
+            }
+            if (annotation.getAnnotationName().getValue().equals("Return")) {
+                BLangExpression bLangLiteral = bLangRecordLiteral.getKeyValuePairs().get(0).getValue();
+                return bLangLiteral.toString();
             }
         }
         return "";
