@@ -2222,7 +2222,7 @@
         <transport.http.version>6.0.243</transport.http.version>
         <carbon.messaging.version>2.3.7</carbon.messaging.version>
         <carbon.deployment.version>5.0.0</carbon.deployment.version>
-        <carbon.config.version>2.1.2</carbon.config.version>
+        <carbon.config.version>2.1.6</carbon.config.version>
         <carbon.securevault.version>5.0.4</carbon.securevault.version>
         <carbon.utils.version>1.2.1</carbon.utils.version>
         <slf4j.version>1.7.22</slf4j.version>
