@@ -293,7 +293,7 @@ class ModuleContext {
                         moduleDependencies, dependencyResolution);
             }
         } else {
-            Set<ModuleLoadRequest> moduleLoadRequests = new OverwritableLinkedHashSet();
+            Set<ModuleLoadRequest> moduleLoadRequests = new LinkedHashSet<>();
             moduleLoadRequests.addAll(this.allModuleLoadRequests);
             moduleLoadRequests.addAll(this.allTestModuleLoadRequests);
             for (ModuleLoadRequest modLoadRequest : moduleLoadRequests) {
