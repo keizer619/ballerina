@@ -244,7 +244,6 @@ slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4jSimpleVe
 snakeyaml = { module = "org.yaml:snakeyaml", version.ref = "snakeyamlVersion"}
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqliteJdbcVersion"}
 squareup-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttpVersion"}
-squareup-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttpVersion"}
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlibVersion" }
 squareup-mock-webserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttpVersion"}
 squareup-okio = { module = "com.squareup.okio:okio", version.ref = "squareupOkioVersion"}
