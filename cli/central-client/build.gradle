@@ -39,6 +39,7 @@ dependencies {
     implementation libs.commons.io
     implementation libs.squareup.okhttp
     implementation libs.squareup.okio
+    implementation libs.kotlin.stdlib
 
     testImplementation libs.squareup.mock.webserver
     testImplementation libs.mockito.core
