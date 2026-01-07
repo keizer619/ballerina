@@ -2,31 +2,6 @@
   "packages": [
     {
       "org": "ballerina",
-      "name": "jballerina.java",
-      "version": "0.0.0",
-      "transitive": false,
-      "dependencies": [],
-      "modules": []
-    },
-    {
-      "org": "luheerathan",
-      "name": "pact",
-      "version": "0.1.0",
-      "transitive": false,
-      "dependencies": [
-        {
-          "org": "ballerina",
-          "name": "io",
-          "version": "1.5.0",
-          "transitive": false,
-          "dependencies": [],
-          "modules": []
-        }
-      ],
-      "modules": []
-    },
-    {
-      "org": "ballerina",
       "name": "lang.value",
       "version": "0.0.0",
       "transitive": false,
@@ -43,6 +18,31 @@
       "modules": []
     },
     {
+      "org": "testorg",
+      "name": "packA",
+      "version": "0.1.0",
+      "transitive": false,
+      "dependencies": [
+        {
+          "org": "ballerina",
+          "name": "io",
+          "version": "1.5.0",
+          "transitive": false,
+          "dependencies": [],
+          "modules": []
+        }
+      ],
+      "modules": []
+    },
+    {
+      "org": "ballerina",
+      "name": "jballerina.java",
+      "version": "0.0.0",
+      "transitive": false,
+      "dependencies": [],
+      "modules": []
+    },
+    {
       "org": "ballerina",
       "name": "io",
       "version": "1.5.0",
@@ -50,7 +50,7 @@
       "dependencies": [
         {
           "org": "ballerina",
-          "name": "jballerina.java",
+          "name": "lang.value",
           "version": "0.0.0",
           "transitive": false,
           "dependencies": [],
@@ -58,7 +58,7 @@
         },
         {
           "org": "ballerina",
-          "name": "lang.value",
+          "name": "jballerina.java",
           "version": "0.0.0",
           "transitive": false,
           "dependencies": [],
@@ -70,10 +70,10 @@
   ],
   "modules": [
     {
-      "org": "luheerathan",
-      "package_name": "pact",
+      "org": "testorg",
+      "package_name": "packA",
       "version": "0.1.0",
-      "module_name": "pact",
+      "module_name": "packA",
       "dependencies": [
         {
           "org": "ballerina",
