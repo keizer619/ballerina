@@ -30,7 +30,7 @@ import io.ballerina.projects.PackageManifest;
 import io.ballerina.projects.PackageReadmeMd;
 import io.ballerina.projects.Project;
 import io.ballerina.projects.ProjectKind;
-import io.ballerina.projects.bala.BalaProject;
+import io.ballerina.projects.directory.BalaProject;
 import io.ballerina.projects.util.ProjectConstants;
 import io.ballerina.projects.util.ProjectUtils;
 import okhttp3.OkHttpClient;
