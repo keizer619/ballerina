@@ -17,7 +17,10 @@
  */
 package org.ballerinalang.test.runtime.entity;
 
+import org.ballerinalang.test.runtime.util.TesterinaConstants;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -125,5 +128,60 @@ public class PackageTestResult {
         if (coverage != null) {
             this.moduleCoverage.add(coverage);
         }
+    }
+
+    /**
+     * Calculates the project level results summary by getting the totals and averages.
+     *
+     * @param coverage if coverage is enabled or not
+     */
+    public void finalizeTestResults(boolean coverage) {
+        for (ModuleStatus modStatus : moduleStatus) {
+            if (TesterinaConstants.DOT.equals(modStatus.getName())) {
+                modStatus.setName(projectName);
+            }
+            passed += modStatus.getPassed();
+            failed += modStatus.getFailed();
+            skipped += modStatus.getSkipped();
+            totalTests = passed + failed + skipped;
+        }
+        if (coverage) {
+            for (ModuleCoverage modCov : moduleCoverage) {
+                if (TesterinaConstants.DOT.equals(modCov.getName())) {
+                    modCov.setName(projectName);
+                }
+                coveredLines += modCov.getCoveredLines();
+                missedLines += modCov.getMissedLines();
+                float coverageVal = (float) coveredLines / (coveredLines + missedLines) * 100;
+                coveragePercentage = (float) (Math.round(coverageVal * 100.0) / 100.0);
+            }
+        }
+
+        // For each module coverage, check if there is a module status as well
+        // If module status doesnt exist, it doesnt show up in the HTML report
+        for (ModuleCoverage modCov : moduleCoverage) {
+            boolean doesExist = false;
+
+            for (ModuleStatus modStatus : moduleStatus) {
+                if (modCov.getName().equals(modStatus.getName())) {
+                    doesExist = true;
+                }
+            }
+
+            if (!doesExist) {
+                ModuleStatus missingModuleStatus = new ModuleStatus();
+                missingModuleStatus.setName(modCov.getName());
+                moduleStatus.add(missingModuleStatus);
+            }
+        }
+
+        // sort the module list to be in the alphabetical order
+        moduleStatus = moduleStatus.stream()
+                .sorted(Comparator.comparing(ModuleStatus::getName))
+                .toList();
+
+        moduleCoverage = moduleCoverage.stream()
+                .sorted(Comparator.comparing(ModuleCoverage::getName))
+                .toList();
     }
 }
