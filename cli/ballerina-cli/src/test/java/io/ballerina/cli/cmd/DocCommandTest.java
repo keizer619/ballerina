@@ -134,7 +134,7 @@ public class DocCommandTest extends BaseCommandTest {
                 .resolve("index.html"));
     }
 
-    @Test (description = "Test doc command on a workspace project")
+    @Test (description = "Test doc command on a single project within a workspace")
     public void testGenerateForOneProjectInWorkspace() throws IOException {
         Path projectPath = this.testResources.resolve("workspaces/wp-simple/pkgA");
         System.setProperty(USER_DIR_PROPERTY, projectPath.toString());

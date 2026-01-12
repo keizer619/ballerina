@@ -150,7 +150,7 @@ public class DocCommand implements BLauncherCmd {
 
         if (argList != null) {
             if (!Paths.get(argList.get(0)).isAbsolute()) {
-                this.projectPath = this.projectPath.resolve(Paths.get(argList.get(0)).toAbsolutePath());
+                this.projectPath = this.projectPath.resolve(Paths.get(argList.get(0))).toAbsolutePath();
             } else {
                 this.projectPath = Paths.get(argList.get(0));
             }
@@ -195,6 +195,7 @@ public class DocCommand implements BLauncherCmd {
                 if (this.exitWhenFinish) {
                     Runtime.getRuntime().exit(1);
                 }
+                return;
             }
 
             WorkspaceProject workspaceProject = (WorkspaceProject) project;
@@ -206,15 +207,10 @@ public class DocCommand implements BLauncherCmd {
                 Optional<BuildProject> buildProjectOptional = projectDependencyGraph.getNodes().stream()
                         .filter(node -> node.sourceRoot().equals(this.projectPath)).findFirst();
                 executeTasks(buildProjectOptional.orElseThrow());
-                if (this.combine) {
-                    combineDocs();
-                }
+
             } else {
                 for (BuildProject buildProject : projectDependencyGraph.toTopologicallySortedList()) {
                     executeTasks(buildProject);
-                    if (this.combine) {
-                        combineDocs();
-                    }
                 }
             }
         } else {
@@ -229,17 +225,12 @@ public class DocCommand implements BLauncherCmd {
             } else {
                 executeTasks(project);
             }
-            if (this.combine) {
-                combineDocs();
-            }
         }
 
         if (this.exitWhenFinish) {
             Runtime.getRuntime().exit(0);
         }
     }
-
-
 
     private void executeTasks(Project project) {
         // normalize paths
@@ -257,12 +248,10 @@ public class DocCommand implements BLauncherCmd {
                 .build();
 
         taskExecutor.executeTasks(project);
-    }
-
-    private void combineDocs() {
-        // combine docs
-        outStream.println("Combining Docs");
-        BallerinaDocGenerator.mergeApiDocs(this.projectPath);
+        if (this.combine) {
+            outStream.println("Combining Docs");
+            BallerinaDocGenerator.mergeApiDocs(this.projectPath);
+        }
     }
 
     @Override

@@ -241,7 +241,7 @@ public class RunTestsTask implements Task {
             }
 
             if (minCoverage != null && coverage) {
-                if (testReport == null) {
+                if (testReport == null || testReport.getPackages().isEmpty()) {
                     throw createLauncherException("Test report is not available for coverage evaluation.");
                 }
                 float coveragePercentage = testReport.getPackages().getLast().getCoveragePercentage();

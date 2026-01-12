@@ -22,6 +22,7 @@ import org.ballerinalang.test.runtime.util.TesterinaConstants;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Package entity for test report to match test_result.json format.
@@ -152,23 +153,24 @@ public class PackageTestResult {
                 }
                 coveredLines += modCov.getCoveredLines();
                 missedLines += modCov.getMissedLines();
-                float coverageVal = (float) coveredLines / (coveredLines + missedLines) * 100;
+            }
+            int totalLines = coveredLines + missedLines;
+            if (totalLines > 0) {
+                float coverageVal = (float) coveredLines / totalLines * 100;
                 coveragePercentage = (float) (Math.round(coverageVal * 100.0) / 100.0);
+            } else {
+                coveragePercentage = 0.0f;
             }
         }
 
         // For each module coverage, check if there is a module status as well
-        // If module status doesnt exist, it doesnt show up in the HTML report
+        // If module status doesn't exist, it doesn't show up in the HTML report
+        Set<String> moduleStatusNames = moduleStatus.stream()
+                .map(ModuleStatus::getName)
+                .collect(java.util.stream.Collectors.toSet());
+
         for (ModuleCoverage modCov : moduleCoverage) {
-            boolean doesExist = false;
-
-            for (ModuleStatus modStatus : moduleStatus) {
-                if (modCov.getName().equals(modStatus.getName())) {
-                    doesExist = true;
-                }
-            }
-
-            if (!doesExist) {
+            if (!moduleStatusNames.contains(modCov.getName())) {
                 ModuleStatus missingModuleStatus = new ModuleStatus();
                 missingModuleStatus.setName(modCov.getName());
                 moduleStatus.add(missingModuleStatus);
@@ -176,11 +178,11 @@ public class PackageTestResult {
         }
 
         // sort the module list to be in the alphabetical order
-        moduleStatus = moduleStatus.stream()
+        this.moduleStatus = this.moduleStatus.stream()
                 .sorted(Comparator.comparing(ModuleStatus::getName))
                 .toList();
 
-        moduleCoverage = moduleCoverage.stream()
+        this.moduleCoverage = this.moduleCoverage.stream()
                 .sorted(Comparator.comparing(ModuleCoverage::getName))
                 .toList();
     }
