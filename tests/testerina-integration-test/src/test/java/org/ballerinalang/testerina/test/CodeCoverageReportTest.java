@@ -236,6 +236,16 @@ public class CodeCoverageReportTest extends BaseTestCase {
         validateClassNames(getExpectedCoverageClasses());
     }
 
+    @Test
+    public void minCoverageTest() throws BallerinaTestException {
+        projectPath = projectBasedTestsPath.resolve("min-coverage").toString();
+        String output = balClient.runMainAndReadStdOut("test", new String[]{"--code-coverage", "--min-coverage=80"},
+                new HashMap<>(), projectPath, true);
+        String expectedErr = "error: code coverage is below the minimum threshold of " +
+                "80.0%, current coverage is 75.0%";
+        Assert.assertTrue(output.contains(expectedErr));
+    }
+
     /**
      * Get the expected class elements per each package element in coverage XML.
      *
