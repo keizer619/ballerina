@@ -109,14 +109,34 @@ function processConfigAnnotation(string name, function f) returns boolean {
                 || !executionManager.isParallelExecutionEnabled()
                 || !isSatisfiedParallelizableConditions;
 
+        EvaluationConfig? evalConfig = (typeof f).@EvalConfig;
+        error? evalConfigError = validateEvaluationConfig(evalConfig);
+        if diagnostics is () && evalConfigError !is () {
+            diagnostics = evalConfigError;
+        }
+
         testRegistry.addFunction(name = name, executableFunction = f, before = config.before,
             after = config.after, groups = config.groups.cloneReadOnly(), diagnostics = diagnostics,
             dependsOn = config.dependsOn.cloneReadOnly(), serialExecution = serialExecution,
-            config = config.cloneReadOnly());
+            config = config.cloneReadOnly(), evalConfig = evalConfig.cloneReadOnly());
         executionManager.createTestFunctionMetaData(functionName = name, dependsOnCount = config.dependsOn.length(),
             enabled = enabled);
     }
     return false;
+}
+
+function validateEvaluationConfig(EvaluationConfig? evalConfig) returns error? {
+    if evalConfig is () {
+        return;
+    }
+    if evalConfig.confidence < 0.0 || evalConfig.confidence > 1.0 {
+        return error("invalid evaluation config: 'confidence' must be between 0.0 and 1.0, found: " +
+            evalConfig.confidence.toString());
+    }
+    if evalConfig.iterations <= 0 {
+        return error("invalid evaluation config: 'iterations' must be a positive integer, found: " +
+            evalConfig.iterations.toString());
+    }
 }
 
 function isBeforeAfterFuncSetIsolated(TestConfig config, string[] reasonForSerialExecution) returns boolean {

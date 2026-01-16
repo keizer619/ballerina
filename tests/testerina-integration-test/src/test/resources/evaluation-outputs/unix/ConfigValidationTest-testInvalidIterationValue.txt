@@ -1,0 +1,27 @@
+WARNING: Running tests in parallel is an experimental feature
+Compiling source
+	evaluation/config:0.0.0
+
+Running Tests with Coverage
+
+	config
+
+	testInvalidIterationValue has failed.
+
+
+		[fail] testInvalidIterationValue:
+
+		    invalid evaluation config: 'iterations' must be a positive integer, found: 0
+			
+
+
+		0 passing
+		1 failing
+		0 skipped
+
+		Test execution time :*****s
+
+Generating Test Report*****evaluation-tests/evaluation-config/target/report/test_results.json
+
+warning: Could not find the required HTML report tools for code coverage at*****lib/tools/coverage/report.zip
+error: there are test failures
