@@ -80,7 +80,6 @@ import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_INCOMPATIBL
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_INVALID_BYTE_RANGE;
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_SIZE_MISMATCH;
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_TOML_INVALID_ADDTIONAL_RECORD_FIELD;
-import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_TOML_INVALID_MODULE_STRUCTURE;
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_TOML_INVALID_MODULE_STRUCTURE_WITH_VARIABLE;
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_TOML_REQUIRED_FILED_NOT_PROVIDED;
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_TOML_TABLE_KEY_NOT_PROVIDED;
