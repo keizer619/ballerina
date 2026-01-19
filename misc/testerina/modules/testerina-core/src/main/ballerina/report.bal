@@ -314,7 +314,7 @@ function moduleStatusReport(ReportData data) {
 function getPassedEntry(ResultData resultData) returns map<json> {
     Result result = new (resultData);
     map<json> entry = {
-        "name": result.fullName(),
+        "name": escapeSpecialCharactersJson(result.fullName()),
         "status": "PASSED"
     };
     if result.testType() == EVAL_TEST {
@@ -326,7 +326,7 @@ function getPassedEntry(ResultData resultData) returns map<json> {
 function getFailedEntry(ResultData resultData) returns map<json> {
     Result result = new (resultData);
     map<json> entry = {
-        "name": result.fullName(),
+        "name": escapeSpecialCharactersJson(result.fullName()),
         "status": "FAILURE",
         "failureMessage": replaceDoubleQuotes(result.message())
     };
