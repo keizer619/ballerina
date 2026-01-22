@@ -18,12 +18,20 @@
 
 package org.ballerinalang.testerina.test.evaluation;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.ballerinalang.testerina.test.utils.CommonUtils;
 import org.testng.Assert;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
 public class EvaluationUtils {
@@ -52,9 +60,59 @@ public class EvaluationUtils {
                 fileContent.stripTrailing().replaceAll(regex, ""));
     }
 
+    public static void assertJsonReport(String jsonReportName, String jsonReport) throws IOException {
+        if (IS_WINDOWS) {
+            String fileContent = Files.readString(EVALUATION_OUTPUTS_DIR.resolve("windows").resolve(jsonReportName));
+            JsonUtil.assertJsonEqualsIgnoreArrayOrder(jsonReport.replaceAll("\r\n|\r", "\n").stripTrailing(),
+                    fileContent.replaceAll("\r\n|\r", "\n").stripTrailing());
+            return;
+        }
+        String fileContent = Files.readString(EVALUATION_OUTPUTS_DIR.resolve("unix").resolve(jsonReportName));
+        JsonUtil.assertJsonEqualsIgnoreArrayOrder(jsonReport.stripTrailing(), fileContent.stripTrailing());
+    }
+
     protected static String replaceProjectPath(String content) {
         content = CommonUtils.replaceVaryingString("Generating Test Report", "evaluation-tests", content);
         return CommonUtils.replaceVaryingString("warning: Could not find the required HTML " +
                 "report tools for code coverage at", "lib", content);
+    }
+
+    private static class JsonUtil {
+        private static final Gson GSON = new Gson();
+
+        public static void assertJsonEqualsIgnoreArrayOrder(String json1, String json2) {
+            JsonElement e1 = normalize(JsonParser.parseString(json1));
+            JsonElement e2 = normalize(JsonParser.parseString(json2));
+            if (!e1.equals(e2)) {
+                throw new AssertionError("JSON documents do not match.\nExpected:\n" + e1 + "\nActual:\n" + e2);
+            }
+        }
+
+        private static JsonElement normalize(JsonElement element) {
+            if (element.isJsonObject()) {
+                JsonObject obj = element.getAsJsonObject();
+                JsonObject normalized = new JsonObject();
+
+                for (String key : obj.keySet()) {
+                    normalized.add(key, normalize(obj.get(key)));
+                }
+                return normalized;
+            }
+
+            if (element.isJsonArray()) {
+                JsonArray array = element.getAsJsonArray();
+                List<JsonElement> elements = new ArrayList<>();
+                for (JsonElement elem : array) {
+                    elements.add(normalize(elem));
+                }
+                elements.sort(Comparator.comparing(GSON::toJson));
+                JsonArray normalizedArray = new JsonArray();
+                for (JsonElement elem : elements) {
+                    normalizedArray.add(elem);
+                }
+                return normalizedArray;
+            }
+            return element;
+        }
     }
 }

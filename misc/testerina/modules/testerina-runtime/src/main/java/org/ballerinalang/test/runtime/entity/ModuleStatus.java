@@ -86,12 +86,18 @@ public class ModuleStatus {
     private static class Test {
         private final String name;
         private final Status status;
-        private String failureMessage = "";
+        private final String failureMessage;
+        private final EvaluationRun[] evalRuns;
 
         public Test(String name, Status status, String failureMessage) {
+            this(name, status, failureMessage, null);
+        }
+
+        public Test(String name, Status status, String failureMessage, EvaluationRun[] evalRuns) {
             this.name = name;
             this.status = status;
             this.failureMessage = failureMessage;
+            this.evalRuns = evalRuns;
         }
 
         public String getFailureMessage() {
@@ -100,6 +106,90 @@ public class ModuleStatus {
 
         public String getName() {
             return name;
+        }
+
+        public Status getStatus() {
+            return status;
+        }
+
+        public EvaluationRun[] getEvalRuns() {
+            return evalRuns;
+        }
+    }
+
+    /**
+     * Base class for evaluation runs.
+     */
+    private static class EvaluationRun {
+        private int id;
+        private String errorMessage; // Optional - for runs without dataset
+        private EvaluationOutcome[] outcomes; // Optional - for runs with dataset
+        private Float passRate; // Optional - for runs with dataset (using Float for nullability)
+
+        public EvaluationRun() {
+            // Default constructor for JSON deserialization
+        }
+
+        public EvaluationRun(int id, String errorMessage) {
+            this.id = id;
+            this.errorMessage = errorMessage;
+        }
+
+        public EvaluationRun(int id, EvaluationOutcome[] outcomes, float passRate) {
+            this.id = id;
+            this.outcomes = outcomes;
+            this.passRate = passRate;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
+
+        public EvaluationOutcome[] getOutcomes() {
+            return outcomes;
+        }
+
+        public Float getPassRate() {
+            return passRate;
+        }
+
+        // Helper method to check type
+        public boolean hasDataSet() {
+            return outcomes != null;
+        }
+    }
+
+    /**
+     * Represents the outcome of evaluating a single data entry
+     * within an evaluation run.
+     */
+    private static class EvaluationOutcome {
+        private String id;
+        private String errorMessage; // Optional field
+
+        public EvaluationOutcome() {
+            // Default constructor for JSON deserialization
+        }
+
+        public EvaluationOutcome(String id) {
+            this.id = id;
+        }
+
+        public EvaluationOutcome(String id, String errorMessage) {
+            this.id = id;
+            this.errorMessage = errorMessage;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
         }
     }
 

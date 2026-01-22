@@ -77,6 +77,8 @@ public class EvalAnnotationAnalyzerTask implements AnalysisTask<SyntaxNodeAnalys
         switch (fieldName) {
             case "confidence" -> validateConfidence(context, annotation, fieldNode);
             case "iterations" -> validateIterations(context, annotation, fieldNode);
+            default -> {
+            }
         }
     }
 

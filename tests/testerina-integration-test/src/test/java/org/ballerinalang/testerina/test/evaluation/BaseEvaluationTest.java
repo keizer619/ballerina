@@ -75,8 +75,9 @@ public abstract class BaseEvaluationTest extends BaseTestCase {
     protected void runTestAndVerify(String testName, String packageName) throws BallerinaTestException, IOException {
         String[] args = mergeCoverageArgs(new String[]{PARALLEL_FLAG, "--tests", testName, packageName});
         String output = balClient.runMainAndReadStdOut(TEST_COMMAND, args, new HashMap<>(),
-                evaluationProjectPath, false);
+                evaluationProjectPath, true);
         String fileName = getOutputFileName(testName);
+        // Uncomment only when regenerating expected output files for tests
         // writeTestOutToFile(fileName, output);
         EvaluationUtils.assertOutput(fileName, output);
     }
@@ -87,12 +88,28 @@ public abstract class BaseEvaluationTest extends BaseTestCase {
      * @param packageName The package to test
      */
     protected void runPackageTestAndVerify(String packageName) throws BallerinaTestException, IOException {
-        String[] args = mergeCoverageArgs(new String[]{PARALLEL_FLAG, packageName});
-        String output = balClient.runMainAndReadStdOut(TEST_COMMAND, args, new HashMap<>(),
-                evaluationProjectPath, false);
+        String output = runPackageTest(packageName);
         String fileName = getOutputFileName(packageName);
+        // Uncomment only when regenerating expected output files for tests
         // writeTestOutToFile(fileName, output);
         EvaluationUtils.assertOutput(fileName, output);
+    }
+
+    /**
+     * Runs all tests in a package.
+     *
+     * @param packageName The package to test
+     */
+    protected String runPackageTest(String packageName) throws BallerinaTestException {
+        String[] args = mergeCoverageArgs(new String[]{PARALLEL_FLAG, packageName});
+        return balClient.runMainAndReadStdOut(TEST_COMMAND, args, new HashMap<>(),
+                evaluationProjectPath, true);
+    }
+
+    protected String getEvaluationTestJsonReport(String packageName) throws IOException {
+        Path evalReportPath = Path.of(evaluationProjectPath).resolve(packageName).resolve("target").resolve("report")
+                .resolve("test_results.json");
+        return String.valueOf(Files.readAllLines(evalReportPath));
     }
 
     /**
