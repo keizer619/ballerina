@@ -80,7 +80,6 @@ import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_INCOMPATIBL
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_INVALID_BYTE_RANGE;
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_SIZE_MISMATCH;
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_TOML_INVALID_ADDTIONAL_RECORD_FIELD;
-import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_TOML_INVALID_MODULE_STRUCTURE;
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_TOML_INVALID_MODULE_STRUCTURE_WITH_VARIABLE;
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_TOML_REQUIRED_FILED_NOT_PROVIDED;
 import static io.ballerina.runtime.internal.errors.ErrorCodes.CONFIG_TOML_TABLE_KEY_NOT_PROVIDED;
@@ -139,7 +138,7 @@ public class TomlProvider implements ConfigProvider {
                     }
                     break;
                 case TABLE:
-                    validateUnusedTableNodes((TomlTableNode) node, diagnosticLog, moduleHeader, entryKey);
+                    validateUnusedNodes((TomlTableNode) node, moduleHeader + entryKey + ".", diagnosticLog);
                     break;
                 case TABLE_ARRAY:
                     if (!visitedNodes.contains(node) && !isInvalidNode) {
@@ -153,27 +152,6 @@ public class TomlProvider implements ConfigProvider {
             }
 
         }
-    }
-
-    private void validateUnusedTableNodes(TomlTableNode node, RuntimeDiagnosticLog diagnosticLog, String moduleHeader,
-                                          String nodeName) {
-        if (!visitedNodes.contains(node)) {
-            String lineRange = getLineRange(node);
-            boolean containsOrg = moduleInfo.containsOrg(nodeName);
-            boolean containsModule = moduleInfo.containsModule(nodeName);
-            if (!containsOrg && containsModule) {
-                Module module = moduleInfo.getModuleFromName(nodeName);
-                if (module != null && !invalidRequiredModuleSet.contains(module.toString()) &&
-                        !rootModule.getOrg().equals(module.getOrg())) {
-                    diagnosticLog.error(CONFIG_TOML_INVALID_MODULE_STRUCTURE, null, lineRange, nodeName,
-                            getModuleKey(module));
-                }
-            }
-            if (!(containsOrg || containsModule) && !invalidTomlLines.contains(node.location().lineRange())) {
-                diagnosticLog.error(CONFIG_TOML_UNUSED_VALUE, null, lineRange, moduleHeader + nodeName);
-            }
-        }
-        validateUnusedNodes(node, moduleHeader + nodeName + ".", diagnosticLog);
     }
 
     @Override
