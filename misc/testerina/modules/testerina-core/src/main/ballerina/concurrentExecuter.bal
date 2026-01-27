@@ -170,13 +170,20 @@ isolated function executeDataDrivenEvaluationIsolated(TestFunction testFunction,
         .reduce(isolated function(float total, float next) returns float => total + next, 0);
     float averagePassRate = passRateSum / evalConfig.iterations;
 
+    EvaluationSummary evaluationSummary = {
+        targetConfidence: evalConfig.confidence,
+        observedConfidence: averagePassRate,
+        evaluationRuns: entries
+    };
     if averagePassRate >= evalConfig.confidence {
-        reportData.onPassed(name = testFunction.name, message = string `evaluation passed with an average confidence of ${averagePassRate}`,
-        evaluationRuns = entries.cloneReadOnly(), testType = EVAL_TEST);
+        reportData.onPassed(name = testFunction.name,
+        message = string `evaluation passed with an average confidence of ${averagePassRate}`,
+        evaluationSummary = evaluationSummary.cloneReadOnly(), testType = EVAL_TEST);
         return;
     }
-    reportData.onFailed(name = testFunction.name, message = string `evaluation failed with an average confidence of ${averagePassRate}`,
-    evaluationRuns = entries.cloneReadOnly(),
+    reportData.onFailed(name = testFunction.name,
+    message = string `evaluation failed with an average confidence of ${averagePassRate}`,
+    evaluationSummary = evaluationSummary.cloneReadOnly(),
     testType = EVAL_TEST);
     enableExit();
 }
@@ -233,14 +240,21 @@ isolated function executeNonDataDrivenEvaluationIsolated(TestFunction testFuncti
     }
 
     float passRate = <float>passedIterations / iterations;
+    EvaluationSummary evaluationSummary = {
+        targetConfidence: evalConfig.confidence,
+        observedConfidence: passRate,
+        evaluationRuns: entries
+    };
     if passRate >= requiredConfidence {
-        reportData.onPassed(name = testFunction.name, message = string `evaluation passed with an average confidence of ${passRate}`,
-            evaluationRuns = entries.cloneReadOnly(), testType = EVAL_TEST);
+        reportData.onPassed(name = testFunction.name,
+            message = string `evaluation passed with an average confidence of ${passRate}`,
+            evaluationSummary = evaluationSummary.cloneReadOnly(), testType = EVAL_TEST);
         return afterFunctionResults.some(res => res);
     }
 
-    reportData.onFailed(name = testFunction.name, message = string `evaluation failed with an average confidence of ${passRate}`,
-        evaluationRuns = entries.cloneReadOnly(), testType = EVAL_TEST);
+    reportData.onFailed(name = testFunction.name,
+        message = string `evaluation failed with an average confidence of ${passRate}`,
+        evaluationSummary = evaluationSummary.cloneReadOnly(), testType = EVAL_TEST);
     enableExit();
     return true;
 }

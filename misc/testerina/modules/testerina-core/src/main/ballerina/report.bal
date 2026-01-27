@@ -30,8 +30,14 @@ type ResultData record {|
     string suffix = "";
     string message = "";
     TestType testType;
-    EvaluationRuns evaluationRuns?;
+    EvaluationSummary evaluationSummary?;
 |} & readonly;
+
+type EvaluationSummary record {|
+    EvaluationRuns evaluationRuns;
+    float targetConfidence;
+    float observedConfidence;
+|};
 
 type EvaluationRuns EvaluationRunWithoutDataSet[]|EvaluationRunWithDataSet[];
 
@@ -107,9 +113,9 @@ isolated class Result {
         }
     }
 
-    isolated function getEvaluationRuns() returns EvaluationRuns? {
+    isolated function getEvaluationSummary() returns EvaluationSummary? {
         lock {
-            return self.data.evaluationRuns;
+            return self.data.evaluationSummary;
         }
     }
 }
@@ -207,11 +213,12 @@ isolated function consoleReport(ReportData data) {
 }
 
 isolated function printEvaluationReportInConsole(Result entry) {
-    EvaluationRuns? evalRuns = entry.getEvaluationRuns();
-    if evalRuns is () {
+    EvaluationSummary? eval = entry.getEvaluationSummary();
+    if eval is () {
         return;
     }
     println("\t\t\t    " + "evaluation runs" + ":");
+    EvaluationRuns evalRuns = eval.evaluationRuns;
     if evalRuns is EvaluationRunWithDataSet[] {
         foreach EvaluationRunWithDataSet run in evalRuns {
             println("\n\t\t\t\t" + string `    iteration: ${run.id}`);
@@ -318,7 +325,7 @@ function getPassedEntry(ResultData resultData) returns map<json> {
         "status": "PASSED"
     };
     if result.testType() == EVAL_TEST {
-        entry["evalRuns"] = replaceDoubleQuotesInEvaluationErrorMessage(result.getEvaluationRuns());
+        entry["evaluationSummary"] = replaceDoubleQuotesInEvaluationErrorMessage(result.getEvaluationSummary());
     }
     return entry;
 }
@@ -331,7 +338,7 @@ function getFailedEntry(ResultData resultData) returns map<json> {
         "failureMessage": replaceDoubleQuotes(result.message())
     };
     if result.testType() == EVAL_TEST {
-        entry["evalRuns"] = replaceDoubleQuotesInEvaluationErrorMessage(result.getEvaluationRuns());
+        entry["evaluationSummary"] = replaceDoubleQuotesInEvaluationErrorMessage(result.getEvaluationSummary());
     }
     return entry;
 }
@@ -344,7 +351,11 @@ function getSkippedEntry(ResultData resultData) returns map<json> {
     };
 }
 
-function replaceDoubleQuotesInEvaluationErrorMessage(EvaluationRuns? evalRuns) returns EvaluationRuns? {
+function replaceDoubleQuotesInEvaluationErrorMessage(EvaluationSummary? eval) returns EvaluationSummary? {
+    if eval is () {
+        return;
+    }
+    EvaluationRuns evalRuns = eval.evaluationRuns;
     if evalRuns is EvaluationRunWithoutDataSet[] {
         EvaluationRunWithoutDataSet[] transformedRuns = [];
         foreach var run in evalRuns {
@@ -355,7 +366,11 @@ function replaceDoubleQuotesInEvaluationErrorMessage(EvaluationRuns? evalRuns) r
                 transformedRuns.push(run);
             }
         }
-        return transformedRuns;
+        return {
+            evaluationRuns: transformedRuns,
+            observedConfidence: eval.observedConfidence,
+            targetConfidence: eval.targetConfidence
+        };
     }
 
     if evalRuns is EvaluationRunWithDataSet[] {
@@ -372,7 +387,11 @@ function replaceDoubleQuotesInEvaluationErrorMessage(EvaluationRuns? evalRuns) r
             }
             transformedRuns.push({outcomes: transformedOutcomes.cloneReadOnly(), id: run.id, passRate: run.passRate});
         }
-        return transformedRuns;
+        return {
+            evaluationRuns: transformedRuns,
+            observedConfidence: eval.observedConfidence,
+            targetConfidence: eval.targetConfidence
+        };
     }
     return;
 }

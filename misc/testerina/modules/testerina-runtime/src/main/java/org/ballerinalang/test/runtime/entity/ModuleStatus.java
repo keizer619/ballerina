@@ -87,17 +87,17 @@ public class ModuleStatus {
         private final String name;
         private final Status status;
         private final String failureMessage;
-        private final EvaluationRun[] evalRuns;
+        private final EvaluationSummary evaluationSummary;
 
         public Test(String name, Status status, String failureMessage) {
             this(name, status, failureMessage, null);
         }
 
-        public Test(String name, Status status, String failureMessage, EvaluationRun[] evalRuns) {
+        public Test(String name, Status status, String failureMessage, EvaluationSummary evaluationSummary) {
             this.name = name;
             this.status = status;
             this.failureMessage = failureMessage;
-            this.evalRuns = evalRuns;
+            this.evaluationSummary = evaluationSummary;
         }
 
         public String getFailureMessage() {
@@ -112,8 +112,35 @@ public class ModuleStatus {
             return status;
         }
 
-        public EvaluationRun[] getEvalRuns() {
-            return evalRuns;
+        public EvaluationSummary getEvaluationSummary() {
+            return evaluationSummary;
+        }
+    }
+
+    /**
+     * Class to represent evaluation summary
+     */
+    private static class EvaluationSummary {
+        private final EvaluationRun[] evaluationRuns;
+        private final double targetConfidence;
+        private final double observedConfidence;
+
+        private EvaluationSummary(EvaluationRun[] evalRuns, double targetConfidence, double observedConfidence) {
+            this.evaluationRuns = evalRuns;
+            this.targetConfidence = targetConfidence;
+            this.observedConfidence = observedConfidence;
+        }
+
+        public EvaluationRun[] getEvaluationRuns() {
+            return evaluationRuns;
+        }
+
+        public double getTargetConfidence() {
+            return targetConfidence;
+        }
+
+        public double getObservedConfidence() {
+            return observedConfidence;
         }
     }
 
