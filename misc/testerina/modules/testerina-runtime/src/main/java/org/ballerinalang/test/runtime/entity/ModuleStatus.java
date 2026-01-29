@@ -118,7 +118,7 @@ public class ModuleStatus {
     }
 
     /**
-     * Class to represent evaluation summary
+     * Class to represent the evaluation summary.
      */
     private static class EvaluationSummary {
         private final EvaluationRun[] evaluationRuns;
