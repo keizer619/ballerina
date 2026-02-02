@@ -164,7 +164,7 @@ public final class ObserveUtils {
      *
      * @param tagKey key of the tag to be removed
      */
-    public  static void removeTag(String tagKey) {
+    public  static void removeCustomTag(String tagKey) {
         defaultTags.remove(tagKey);
     }
 
@@ -173,7 +173,7 @@ public final class ObserveUtils {
      *
      * @param tagKey key of the tag
      */
-    public static String getTag(String tagKey) {
+    public static String getCustomTag(String tagKey) {
         if (defaultTags.containsKey(tagKey)) {
             return defaultTags.get(tagKey);
         }
