@@ -153,10 +153,31 @@ public final class ObserveUtils {
      * @param tagValue value of the tag
      */
     public static void addTag(String tagKey, String tagValue) {
-        if (!enabled) {
+        if (!enabled || defaultTags.containsKey(tagKey)) {
             return;
         }
         defaultTags.put(tagKey, tagValue);
+    }
+
+    /**
+     * Remove a default tag.
+     *
+     * @param tagKey key of the tag to be removed
+     */
+    public  static void removeTag(String tagKey) {
+        defaultTags.remove(tagKey);
+    }
+
+    /**
+     * Get a default tag value.
+     *
+     * @param tagKey key of the tag
+     */
+    public static String getTag(String tagKey) {
+        if (defaultTags.containsKey(tagKey)) {
+            return defaultTags.get(tagKey);
+        }
+        return  null;
     }
 
     /**
