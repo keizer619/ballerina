@@ -152,6 +152,21 @@ public class TestCommand implements BLauncherCmd {
     }
 
     TestCommand(Path projectPath, PrintStream outStream, PrintStream errStream, boolean exitWhenFinish,
+                Boolean testReport, Path testReportDir, Boolean coverage, String coverageFormat,
+                Boolean optimizeDependencyCompilation) {
+        this.projectPath = projectPath;
+        this.outStream = outStream;
+        this.errStream = errStream;
+        this.exitWhenFinish = exitWhenFinish;
+        this.testReport = testReport;
+        this.testReportDir = testReportDir;
+        this.coverage = coverage;
+        this.coverageFormat = coverageFormat;
+        this.optimizeDependencyCompilation = optimizeDependencyCompilation;
+        this.offline = true;
+    }
+
+    TestCommand(Path projectPath, PrintStream outStream, PrintStream errStream, boolean exitWhenFinish,
                 Boolean testReport, Path targetDir) {
         this.projectPath = projectPath;
         this.outStream = outStream;
