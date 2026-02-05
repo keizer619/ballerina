@@ -12,10 +12,10 @@ WARNING: Test function 'testNonIsolatedEvalBeforeFunctionFailureWithDataProvider
 	[fail] [before test function for the test]:
 	    error("before hook method failed")
 			callableName: beforeHookFail moduleName: evaluation.before_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 21
-			callableName: beforeHookFail$lambda10$ moduleName: evaluation.before_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 108
+			callableName: beforeHookFail$lambda10$ moduleName: evaluation.before_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 94
 			callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-			callableName: executeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 299
-			callableName: executeBeforeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 262
+			callableName: executeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 311
+			callableName: executeBeforeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 274
 			callableName: executeDataDrivenEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 88
 			callableName: executeDataDrivenTestSet moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 60
 			callableName: executeTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 30

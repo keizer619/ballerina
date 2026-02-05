@@ -23,22 +23,18 @@ isolated function afterHookFail() returns error => error("after hook method fail
 int value = 0;
 
 @test:Config {
-    after: afterHook
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    after: afterHook,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEval() returns error? {
     println("run");
 }
 
 @test:Config {
-    after: afterHook
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    after: afterHook,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEval() returns error? {
     value += 1;
@@ -47,11 +43,9 @@ function testNonIsolatedEval() returns error? {
 
 @test:Config {
     dataProvider: goldenDataSet,
-    after: afterHook
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    after: afterHook,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalWithDataProvider(string query) returns error? {
     println("run");
@@ -59,11 +53,9 @@ isolated function testIsolatedEvalWithDataProvider(string query) returns error? 
 
 @test:Config {
     dataProvider: goldenDataSet,
-    after: afterHook
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    after: afterHook,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalWithDataProvider(string query) returns error? {
     value += 1;
@@ -71,22 +63,18 @@ function testNonIsolatedEvalWithDataProvider(string query) returns error? {
 }
 
 @test:Config {
-    after: afterHookFail
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    after: afterHookFail,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalAfterFunctionFailure() returns error? {
 
 }
 
 @test:Config {
-    after: afterHookFail
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    after: afterHookFail,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalAfterFunctionFailure() returns error? {
     value += 1;
@@ -94,11 +82,9 @@ function testNonIsolatedEvalAfterFunctionFailure() returns error? {
 
 @test:Config {
     after: afterHookFail,
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalAfterFunctionFailureWithDataProvider(string query) returns error? {
 
@@ -106,11 +92,9 @@ isolated function testIsolatedEvalAfterFunctionFailureWithDataProvider(string qu
 
 @test:Config {
     after: afterHookFail,
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalAfterFunctionFailureWithDataProvider(string query) returns error? {
     value += 1;

@@ -5,8 +5,8 @@ Compiling source
 Running Tests with Coverage
 
 	failures
-WARNING: Test function 'testNonIsolatedEvalFailureWithLowConfidence' cannot be parallelized, reason: non-isolated test function
-WARNING: Test function 'testNonIsolatedEvalFailureWithLowConfidenceWithDataProvider' cannot be parallelized, reason: non-isolated test function
+WARNING: Test function 'testNonIsolatedEvalFailureWithLowPassRate' cannot be parallelized, reason: non-isolated test function
+WARNING: Test function 'testNonIsolatedEvalFailureWithLowPassRateWithDataProvider' cannot be parallelized, reason: non-isolated test function
 WARNING: Test function 'testNonIsolatedEvalFailureForInvalidInput' cannot be parallelized, reason: non-isolated test function
 WARNING: Test function 'testNonIsolatedEvalFailureForInvalidInputWithDataProvider' cannot be parallelized, reason: non-isolated test function
 WARNING: Test function 'testNonIsolatedEvalFailureForEmptyDataProvider' cannot be parallelized, reason: non-isolated test function
@@ -20,41 +20,41 @@ WARNING: Test function 'testNonIsolatedEvalReturningErrorWithDataProvider' canno
 			
 			    evaluation runs:
 
-				    iteration: 1
+				    run: 1
 					    message: error("invalid response returned from the model")
-								callableName: testIsolatedEvalReturningError moduleName: evaluation.failures$test.0.tests.test fileName: tests/test.bal lineNumber: 149
+								callableName: testIsolatedEvalReturningError moduleName: evaluation.failures$test.0.tests.test fileName: tests/test.bal lineNumber: 128
 								callableName: testIsolatedEvalReturningError$lambda12$ moduleName: evaluation.failures$test.0.tests.test_execute-generated_1 fileName: tests/test_execute-generated_1.bal lineNumber: 16
 								callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-								callableName: callEvaluationFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 323
-								callableName: executeEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 312
-								callableName: executeNonDataDrivenEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 218
-								callableName: executeNonDataDrivenTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 187
+								callableName: callEvaluationFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 342
+								callableName: executeEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 331
+								callableName: executeNonDataDrivenEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 225
+								callableName: executeNonDataDrivenTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 194
 								callableName: executeTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 30
 								callableName: executeTestIsolated$lambda$1$ moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 86
 							
 
-				    iteration: 2
+				    run: 2
 					    message: error("invalid response returned from the model")
-								callableName: testIsolatedEvalReturningError moduleName: evaluation.failures$test.0.tests.test fileName: tests/test.bal lineNumber: 149
+								callableName: testIsolatedEvalReturningError moduleName: evaluation.failures$test.0.tests.test fileName: tests/test.bal lineNumber: 128
 								callableName: testIsolatedEvalReturningError$lambda12$ moduleName: evaluation.failures$test.0.tests.test_execute-generated_1 fileName: tests/test_execute-generated_1.bal lineNumber: 16
 								callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-								callableName: callEvaluationFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 323
-								callableName: executeEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 312
-								callableName: executeNonDataDrivenEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 218
-								callableName: executeNonDataDrivenTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 187
+								callableName: callEvaluationFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 342
+								callableName: executeEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 331
+								callableName: executeNonDataDrivenEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 225
+								callableName: executeNonDataDrivenTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 194
 								callableName: executeTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 30
 								callableName: executeTestIsolated$lambda$1$ moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 86
 							
 
-				    iteration: 3
+				    run: 3
 					    message: error("invalid response returned from the model")
-								callableName: testIsolatedEvalReturningError moduleName: evaluation.failures$test.0.tests.test fileName: tests/test.bal lineNumber: 149
+								callableName: testIsolatedEvalReturningError moduleName: evaluation.failures$test.0.tests.test fileName: tests/test.bal lineNumber: 128
 								callableName: testIsolatedEvalReturningError$lambda12$ moduleName: evaluation.failures$test.0.tests.test_execute-generated_1 fileName: tests/test_execute-generated_1.bal lineNumber: 16
 								callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-								callableName: callEvaluationFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 323
-								callableName: executeEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 312
-								callableName: executeNonDataDrivenEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 218
-								callableName: executeNonDataDrivenTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 187
+								callableName: callEvaluationFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 342
+								callableName: executeEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 331
+								callableName: executeNonDataDrivenEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 225
+								callableName: executeNonDataDrivenTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 194
 								callableName: executeTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 30
 								callableName: executeTestIsolated$lambda$1$ moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 86
 							

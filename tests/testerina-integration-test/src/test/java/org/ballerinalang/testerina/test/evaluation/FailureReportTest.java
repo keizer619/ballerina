@@ -33,21 +33,21 @@ public class FailureReportTest extends BaseEvaluationTest {
     private static final String PACKAGE_NAME = "evaluation-failures";
 
     /**
-     * Provides test data for low confidence failure scenarios.
+     * Provides test data for low pass rate failure scenarios.
      */
-    @DataProvider(name = "lowConfidenceFailureTests")
-    public Object[][] lowConfidenceFailureTestsDataProvider() {
+    @DataProvider(name = "lowPassRateFailureTests")
+    public Object[][] lowPassRateFailureTestsDataProvider() {
         return new Object[][]{
-                {"testIsolatedEvalFailureWithLowConfidence"},
-                {"testNonIsolatedEvalFailureWithLowConfidence"},
-                {"testIsolatedEvalFailureWithLowConfidenceWithDataProvider"},
-                {"testNonIsolatedEvalFailureWithLowConfidenceWithDataProvider"}
+                {"testIsolatedEvalFailureWithLowPassRate"},
+                {"testNonIsolatedEvalFailureWithLowPassRate"},
+                {"testIsolatedEvalFailureWithLowPassRateWithDataProvider"},
+                {"testNonIsolatedEvalFailureWithLowPassRateWithDataProvider"}
         };
     }
 
-    @Test(dataProvider = "lowConfidenceFailureTests",
-            description = "Test evaluation fails when confidence threshold is not met")
-    public void testEvalFailsOnLowConfidence(String testName) throws BallerinaTestException, IOException {
+    @Test(dataProvider = "lowPassRateFailureTests",
+            description = "Test evaluation fails when minPassRate threshold is not met")
+    public void testEvalFailsOnLowPassRate(String testName) throws BallerinaTestException, IOException {
         runTestAndVerify(testName, PACKAGE_NAME);
     }
 

@@ -23,11 +23,9 @@ isolated function beforeHookFail() returns error => error("before hook method fa
 int value = 0;
 
 @test:Config {
-    before: beforeHook
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    before: beforeHook,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEval() returns error? {
     value += 1;
@@ -35,11 +33,9 @@ function testNonIsolatedEval() returns error? {
 }
 
 @test:Config {
-    before: beforeHook
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    before: beforeHook,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEval() returns error? {
     println("run");
@@ -47,11 +43,9 @@ isolated function testIsolatedEval() returns error? {
 
 @test:Config {
     before: beforeHook,
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalWithDataProvider(string query) returns error? {
     println("run");
@@ -59,11 +53,9 @@ isolated function testIsolatedEvalWithDataProvider(string query) returns error? 
 
 @test:Config {
     before: beforeHook,
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalWithDataProvider(string query) returns error? {
     value += 1;
@@ -71,22 +63,18 @@ function testNonIsolatedEvalWithDataProvider(string query) returns error? {
 }
 
 @test:Config {
-    before: beforeHookFail
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    before: beforeHookFail,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalBeforeFunctionFailure() returns error? {
 
 }
 
 @test:Config {
-    before: beforeHookFail
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    before: beforeHookFail,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalBeforeFunctionFailure() returns error? {
     value += 1;
@@ -94,11 +82,9 @@ function testNonIsolatedEvalBeforeFunctionFailure() returns error? {
 
 @test:Config {
     before: beforeHookFail,
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalBeforeFunctionFailureWithDataProvider(string query) returns error? {
 
@@ -106,11 +92,9 @@ isolated function testIsolatedEvalBeforeFunctionFailureWithDataProvider(string q
 
 @test:Config {
     before: beforeHookFail,
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalBeforeFunctionFailureWithDataProvider(string query) returns error? {
     value += 1;

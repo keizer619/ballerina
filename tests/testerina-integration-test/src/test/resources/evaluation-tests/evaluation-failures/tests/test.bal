@@ -18,141 +18,119 @@ import ballerina/test;
 
 int value = 0;
 
-@test:Config
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+@test:Config {
+    minPassRate: 1,
+    runs: 3
 }
-isolated function testIsolatedEvalFailureWithLowConfidence() returns error? {
+isolated function testIsolatedEvalFailureWithLowPassRate() returns error? {
     test:assertEquals(1, 2);
 }
 
-@test:Config
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+@test:Config {
+    minPassRate: 1,
+    runs: 3
 }
-function testNonIsolatedEvalFailureWithLowConfidence() returns error? {
+function testNonIsolatedEvalFailureWithLowPassRate() returns error? {
     value += 1;
     test:assertEquals(1, 2);
 }
 
 @test:Config {
-    dataProvider: goldenDataSet
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
-}
-isolated function testIsolatedEvalFailureWithLowConfidenceWithDataProvider(string query) returns error? {
+isolated function testIsolatedEvalFailureWithLowPassRateWithDataProvider(string query) returns error? {
     test:assertEquals(1, 2);
 }
 
 @test:Config {
-    dataProvider: goldenDataSet
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
-}
-function testNonIsolatedEvalFailureWithLowConfidenceWithDataProvider(string query) returns error? {
+function testNonIsolatedEvalFailureWithLowPassRateWithDataProvider(string query) returns error? {
     value += 1;
     test:assertEquals(1, 2);
 }
 
-@test:Config
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+@test:Config {
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalFailureForInvalidInput(int query) returns error? {
 }
 
-@test:Config
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+@test:Config {
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalFailureForInvalidInput(int query) returns error? {
     value += 1;
 }
 
 @test:Config {
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalFailureForInvalidInputWithDataProvider(int query) returns error? {
 }
 
 @test:Config {
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalFailureForInvalidInputWithDataProvider(int query) returns error? {
     value += 1;
 }
 
 @test:Config {
-    dataProvider: emptyDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: emptyDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalFailureForEmptyDataProvider(string query) returns error? {
 }
 
 @test:Config {
-    dataProvider: emptyDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: emptyDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalFailureForEmptyDataProvider(string query) returns error? {
     value += 1;
 }
 
 @test:Config {
-    dataProvider: nonReadonlyDataset
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: nonReadonlyDataset,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalFailureForNonReadOnlyDataEntry() returns error? {
 }
 
 @test:Config {
-    dataProvider: nonReadonlyDataset
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: nonReadonlyDataset,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalFailureForNonReadOnlyDataEntry() returns error? {
     value += 1;
 }
 
-@test:Config
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+@test:Config {
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalReturningError() returns error? {
     return error("invalid response returned from the model");
 }
 
-@test:Config
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+@test:Config {
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalReturningError() returns error? {
     value += 1;
@@ -160,22 +138,18 @@ function testNonIsolatedEvalReturningError() returns error? {
 }
 
 @test:Config {
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalReturningErrorWithDataProvider(string query) returns error? {
     return error("invalid response returned from the model");
 }
 
 @test:Config {
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalReturningErrorWithDataProvider(string query) returns error? {
     value += 1;
