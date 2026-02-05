@@ -103,7 +103,7 @@ isolated function executeDataDrivenEvaluationIsolated(TestFunction testFunction,
     AnyOrError[][] values = [];
     _ = prepareDataSet(testFunctionArgs, keys, values);
 
-    foreach int iteration in 1 ... evalConfig.iterations {
+    foreach int run in 1 ... evalConfig.runs {
         executeBeforeEachFunctionsIsolated();
         if executeBeforeFunctionIsolated(testFunction) {
             executionManager.setSkip(testFunction.name);
@@ -161,21 +161,21 @@ isolated function executeDataDrivenEvaluationIsolated(TestFunction testFunction,
         }
 
         float passRate = <float>passedEntries / totalEntries;
-        entries.push({id: iteration, outcomes: outcomes.cloneReadOnly(), passRate});
+        entries.push({id: run, outcomes: outcomes.cloneReadOnly(), passRate});
         _ = executeAfterFunctionIsolated(testFunction);
         executeAfterEachFunctionsIsolated();
     }
 
     float passRateSum = entries.'map(entry => entry.passRate)
         .reduce(isolated function(float total, float next) returns float => total + next, 0);
-    float averagePassRate = passRateSum / evalConfig.iterations;
+    float averagePassRate = passRateSum / evalConfig.runs;
 
     EvaluationSummary evaluationSummary = {
-        targetConfidence: evalConfig.confidence,
-        observedConfidence: averagePassRate,
+        targetPassRate: evalConfig.minPassRate,
+        observedPassRate: averagePassRate,
         evaluationRuns: entries
     };
-    if averagePassRate >= evalConfig.confidence {
+    if averagePassRate >= evalConfig.minPassRate {
         reportData.onPassed(name = testFunction.name,
         message = string `evaluation passed with an average confidence of ${averagePassRate}`,
         evaluationSummary = evaluationSummary.cloneReadOnly(), testType = EVAL_TEST);
@@ -209,13 +209,13 @@ isolated function executeNonDataDrivenTestIsolated(TestFunction testFunction,
 isolated function executeNonDataDrivenEvaluationIsolated(TestFunction testFunction,
         DataProviderReturnType? testFunctionArgs) returns boolean {
     EvaluationConfig evalConfig = getEvalConfig(testFunction);
-    int iterations = evalConfig.iterations;
-    float requiredConfidence = evalConfig.confidence;
+    int runs = evalConfig.runs;
+    float requiredConfidence = evalConfig.minPassRate;
     int passedIterations = 0;
     EvaluationRunWithoutDataSet[] entries = [];
     boolean[] afterFunctionResults = [];
 
-    foreach int i in 1 ... iterations {
+    foreach int run in 1 ... runs {
         executeBeforeEachFunctionsIsolated();
         if executeBeforeFunctionIsolated(testFunction) {
             executionManager.setSkip(testFunction.name);
@@ -233,16 +233,16 @@ isolated function executeNonDataDrivenEvaluationIsolated(TestFunction testFuncti
         } else if result is () {
             passedIterations += 1;
         }
-        entries.push({id: i, errorMessage: getErrorMessageFromResult(result)});
+        entries.push({id: run, errorMessage: getErrorMessageFromResult(result)});
         boolean afterFunctionResult = executeAfterFunctionIsolated(testFunction);
         afterFunctionResults.push(afterFunctionResult);
         executeAfterEachFunctionsIsolated();
     }
 
-    float passRate = <float>passedIterations / iterations;
+    float passRate = <float>passedIterations / runs;
     EvaluationSummary evaluationSummary = {
-        targetConfidence: evalConfig.confidence,
-        observedConfidence: passRate,
+        targetPassRate: evalConfig.minPassRate,
+        observedPassRate: passRate,
         evaluationRuns: entries
     };
     if passRate >= requiredConfidence {
@@ -259,15 +259,20 @@ isolated function executeNonDataDrivenEvaluationIsolated(TestFunction testFuncti
     return true;
 }
 
-isolated function isEvaluationTest(TestFunction testFunction) returns boolean
-    => testFunction.evalConfig is EvaluationConfig;
+isolated function isEvaluationTest(TestFunction testFunction) returns boolean {
+    TestConfig? testConfig = testFunction.config;
+    if testConfig is () {
+        return false;
+    }
+    return testConfig.runs != 1 || testConfig.minPassRate != 1.0;
+}
 
 isolated function getEvalConfig(TestFunction testFunction) returns EvaluationConfig {
-    EvaluationConfig? evalConfig = testFunction.evalConfig;
-    if evalConfig is EvaluationConfig {
-        return evalConfig;
+    if !isEvaluationTest(testFunction) {
+        panic error("unable to obtain valid evaluation config");
     }
-    panic error("unable to obtain valid eval config");
+    TestConfig testConfig = <TestConfig>testFunction.config;
+    return {runs: testConfig.runs, minPassRate: testConfig.minPassRate};
 }
 
 isolated function executeAfterEachFunctionsIsolated() =>

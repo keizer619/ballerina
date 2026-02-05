@@ -75,7 +75,7 @@ function executeDataDrivenTestSet(TestFunction testFunction) {
 
 function executeDataDrivenEvaluation(TestFunction testFunction) {
     EvaluationConfig evalConfig = getEvalConfig(testFunction);
-    int iterations = evalConfig.iterations;
+    int runs = evalConfig.runs;
     EvaluationRunWithDataSet[] entries = [];
 
     string[] keys = [];
@@ -83,7 +83,7 @@ function executeDataDrivenEvaluation(TestFunction testFunction) {
     DataProviderReturnType? params = dataDrivenTestParams[testFunction.name];
     _ = prepareDataSet(params, keys, values);
 
-    foreach int iteration in 1 ... iterations {
+    foreach int iteration in 1 ... runs {
         executeBeforeEachFunctions();
         if executeBeforeFunction(testFunction) {
             executionManager.setSkip(testFunction.name);
@@ -141,14 +141,14 @@ function executeDataDrivenEvaluation(TestFunction testFunction) {
 
     float cumulativePassRateSum = entries.'map(entry => entry.passRate)
         .reduce(isolated function(float total, float next) returns float => total + next, 0);
-    float averagePassRate = cumulativePassRateSum / iterations;
+    float averagePassRate = cumulativePassRateSum / runs;
 
     EvaluationSummary evaluationSummary = {
-        targetConfidence: evalConfig.confidence,
-        observedConfidence: averagePassRate,
+        targetPassRate: evalConfig.minPassRate,
+        observedPassRate: averagePassRate,
         evaluationRuns: entries
     };
-    if averagePassRate >= evalConfig.confidence {
+    if averagePassRate >= evalConfig.minPassRate {
         reportData.onPassed(name = testFunction.name,
         message = string `evaluation passed with an average confidence of ${averagePassRate}`,
             evaluationSummary = evaluationSummary.cloneReadOnly(), testType = EVAL_TEST
@@ -179,13 +179,13 @@ function executeNonDataDrivenTest(TestFunction testFunction) returns boolean {
 
 function executeNonDataDrivenEvaluation(TestFunction testFunction) returns boolean {
     EvaluationConfig evalConfig = getEvalConfig(testFunction);
-    int iterations = evalConfig.iterations;
-    float requiredConfidence = evalConfig.confidence;
+    int runs = evalConfig.runs;
+    float requiredConfidence = evalConfig.minPassRate;
     int passedIterations = 0;
     EvaluationRunWithoutDataSet[] entries = [];
     boolean[] afterFunctionResults = [];
 
-    foreach int i in 1 ... iterations {
+    foreach int run in 1 ... runs {
         executeBeforeEachFunctions();
         if executeBeforeFunction(testFunction) {
             executionManager.setSkip(testFunction.name);
@@ -203,16 +203,16 @@ function executeNonDataDrivenEvaluation(TestFunction testFunction) returns boole
         } else if result is () {
             passedIterations += 1;
         }
-        entries.push({id: i, errorMessage: getErrorMessageFromResult(result)});
+        entries.push({id: run, errorMessage: getErrorMessageFromResult(result)});
         boolean afterFunctionResult = executeAfterFunction(testFunction);
         afterFunctionResults.push(afterFunctionResult);
         executeAfterEachFunctions();
     }
 
-    float passRate = <float>passedIterations / iterations;
+    float passRate = <float>passedIterations / runs;
     EvaluationSummary evaluationSummary = {
-        targetConfidence: evalConfig.confidence,
-        observedConfidence: passRate,
+        targetPassRate: evalConfig.minPassRate,
+        observedPassRate: passRate,
         evaluationRuns: entries
     };
     if passRate >= requiredConfidence {

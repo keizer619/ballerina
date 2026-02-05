@@ -122,25 +122,25 @@ public class ModuleStatus {
      */
     private static class EvaluationSummary {
         private final EvaluationRun[] evaluationRuns;
-        private final double targetConfidence;
-        private final double observedConfidence;
+        private final double targetPassRate;
+        private final double observedPassRate;
 
-        private EvaluationSummary(EvaluationRun[] evalRuns, double targetConfidence, double observedConfidence) {
+        private EvaluationSummary(EvaluationRun[] evalRuns, double targetPassRate, double observedPassRate) {
             this.evaluationRuns = evalRuns;
-            this.targetConfidence = targetConfidence;
-            this.observedConfidence = observedConfidence;
+            this.targetPassRate = targetPassRate;
+            this.observedPassRate = observedPassRate;
         }
 
         public EvaluationRun[] getEvaluationRuns() {
             return evaluationRuns;
         }
 
-        public double getTargetConfidence() {
-            return targetConfidence;
+        public double getTargetPassRate() {
+            return targetPassRate;
         }
 
-        public double getObservedConfidence() {
-            return observedConfidence;
+        public double getObservedPassRate() {
+            return observedPassRate;
         }
     }
 
