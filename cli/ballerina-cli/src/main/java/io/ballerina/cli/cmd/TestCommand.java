@@ -64,6 +64,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -202,6 +203,9 @@ public class TestCommand implements BLauncherCmd {
 
     @CommandLine.Option(names = "--test-report", description = "enable test report generation")
     private Boolean testReport;
+
+    @CommandLine.Option(names = "--test-report-dir", description = "store the test report in a specified directory")
+    private Path testReportDir;
 
     @CommandLine.Option(names = "--code-coverage", description = "enable code coverage")
     private Boolean coverage;
@@ -527,11 +531,23 @@ public class TestCommand implements BLauncherCmd {
         }
 
         Path reportDir;
+        String timeStamp = Instant.now().toString();
+        String jsonReportFileName = RESULTS_JSON_FILE;
+        String htmlResultFileName = RESULTS_HTML_FILE;
+
         try {
-            Files.createDirectories(project.targetDir());
-            Target target = new Target(project.targetDir());
-            reportDir = target.getReportPath();
-            File jsonFile = new File(reportDir.resolve(RESULTS_JSON_FILE).toString());
+            if (testReportDir != null) {
+                Files.createDirectories(testReportDir);
+                reportDir = testReportDir;
+                jsonReportFileName = timeStamp + "_" + RESULTS_JSON_FILE;
+                htmlResultFileName = timeStamp + "_" + RESULTS_HTML_FILE;
+            } else {
+                Files.createDirectories(project.targetDir());
+                Target target = new Target(project.targetDir());
+                reportDir = target.getReportPath();
+            }
+
+            File jsonFile = new File(reportDir.resolve(jsonReportFileName).toString());
             try (FileOutputStream fileOutputStream = new FileOutputStream(jsonFile)) {
                 try (Writer writer = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8)) {
                     writer.write(json);
@@ -552,12 +568,13 @@ public class TestCommand implements BLauncherCmd {
                 }
                 content = Files.readString(reportDir.resolve(RESULTS_HTML_FILE));
                 content = content.replace(REPORT_DATA_PLACEHOLDER, json);
+                Files.deleteIfExists(reportDir.resolve(RESULTS_HTML_FILE));
             } catch (IOException e) {
                 throw createLauncherException("error occurred while preparing test report: " + e);
             }
 
             try {
-                File htmlFile = new File(reportDir.resolve(RESULTS_HTML_FILE).toString());
+                File htmlFile = new File(reportDir.resolve(htmlResultFileName).toString());
                 try (FileOutputStream fileOutputStream = new FileOutputStream(htmlFile)) {
                     try (Writer writer = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8)) {
                         writer.write(content);
