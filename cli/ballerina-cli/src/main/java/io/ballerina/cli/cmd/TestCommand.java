@@ -65,6 +65,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -104,6 +106,8 @@ public class TestCommand implements BLauncherCmd {
     private final PrintStream errStream;
     private Path projectPath;
     private final boolean exitWhenFinish;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS")
+            .withZone(ZoneOffset.UTC);
 
     public TestCommand() {
         this.projectPath = Path.of(System.getProperty(ProjectConstants.USER_DIR));
@@ -546,7 +550,7 @@ public class TestCommand implements BLauncherCmd {
         }
 
         Path reportDir;
-        String timeStamp = Instant.now().toString();
+        String timeStamp = DATE_TIME_FORMATTER.format(Instant.now());
         String jsonReportFileName = RESULTS_JSON_FILE;
         String htmlResultFileName = RESULTS_HTML_FILE;
 

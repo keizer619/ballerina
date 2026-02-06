@@ -52,7 +52,8 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,6 +85,7 @@ public class TestCommandTest extends BaseCommandTest {
     private Path testResources;
     private Path testDistCacheDirectory;
     ProjectEnvironmentBuilder projectEnvironmentBuilder;
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS");
 
     @Override
     @BeforeClass
@@ -365,7 +367,7 @@ public class TestCommandTest extends BaseCommandTest {
 
         String timestamp = fileName.substring(0, fileName.length() - suffix.length());
         try {
-            Instant.parse(timestamp); // ISO-8601 validation
+            LocalDateTime.parse(timestamp, FMT);
             return true;
         } catch (DateTimeParseException e) {
             return false;
