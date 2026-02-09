@@ -16,7 +16,7 @@ WARNING: Test function 'testNonIsolatedEvalReturningErrorWithDataProvider' canno
 
 		[fail] testNonIsolatedEvalReturningError:
 
-		    evaluation failed with an average confidence of 0.0
+		    evaluation failed with an average pass rate of 0.0
 			
 			    evaluation runs:
 

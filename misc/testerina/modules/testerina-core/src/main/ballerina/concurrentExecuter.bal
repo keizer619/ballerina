@@ -177,12 +177,12 @@ isolated function executeDataDrivenEvaluationIsolated(TestFunction testFunction,
     };
     if averagePassRate >= evalConfig.minPassRate {
         reportData.onPassed(name = testFunction.name,
-        message = string `evaluation passed with an average confidence of ${averagePassRate}`,
+        message = string `evaluation passed with an average pass rate of ${averagePassRate}`,
         evaluationSummary = evaluationSummary.cloneReadOnly(), testType = EVAL_TEST);
         return;
     }
     reportData.onFailed(name = testFunction.name,
-    message = string `evaluation failed with an average confidence of ${averagePassRate}`,
+    message = string `evaluation failed with an average pass rate of ${averagePassRate}`,
     evaluationSummary = evaluationSummary.cloneReadOnly(),
     testType = EVAL_TEST);
     enableExit();
@@ -247,13 +247,13 @@ isolated function executeNonDataDrivenEvaluationIsolated(TestFunction testFuncti
     };
     if passRate >= requiredConfidence {
         reportData.onPassed(name = testFunction.name,
-            message = string `evaluation passed with an average confidence of ${passRate}`,
+            message = string `evaluation passed with an average pass rate of ${passRate}`,
             evaluationSummary = evaluationSummary.cloneReadOnly(), testType = EVAL_TEST);
         return afterFunctionResults.some(res => res);
     }
 
     reportData.onFailed(name = testFunction.name,
-        message = string `evaluation failed with an average confidence of ${passRate}`,
+        message = string `evaluation failed with an average pass rate of ${passRate}`,
         evaluationSummary = evaluationSummary.cloneReadOnly(), testType = EVAL_TEST);
     enableExit();
     return true;

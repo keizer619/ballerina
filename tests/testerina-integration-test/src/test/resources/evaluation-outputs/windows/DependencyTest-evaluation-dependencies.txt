@@ -9,7 +9,7 @@ WARNING: Test function 'testNonIsolatedEval' cannot be parallelized, reason: non
 
 		[fail] myEval:
 
-		    evaluation failed with an average confidence of 0.0
+		    evaluation failed with an average pass rate of 0.0
 			
 			    evaluation runs:
 

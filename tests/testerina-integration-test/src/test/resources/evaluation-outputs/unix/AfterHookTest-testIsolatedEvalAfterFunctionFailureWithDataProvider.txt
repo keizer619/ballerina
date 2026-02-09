@@ -47,7 +47,7 @@ WARNING: Test function 'testNonIsolatedEvalAfterFunctionFailureWithDataProvider'
 		
 		[pass] testIsolatedEvalAfterFunctionFailureWithDataProvider
 
-		    evaluation passed with an average confidence of 1.0
+		    evaluation passed with an average pass rate of 1.0
 			
 
 
