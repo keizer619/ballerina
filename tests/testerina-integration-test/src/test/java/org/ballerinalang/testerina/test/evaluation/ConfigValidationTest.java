@@ -38,8 +38,8 @@ public class ConfigValidationTest extends BaseEvaluationTest {
     @DataProvider(name = "invalidConfigurationTest")
     public Object[][] invalidConfigurationTestDataProvider() {
         return new Object[][]{
-                {"testInvalidConfidenceValue"},
-                {"testInvalidIterationValue"}
+                {"testInvalidMinPassRateValue"},
+                {"testInvalidRunsValue"}
         };
     }
 
