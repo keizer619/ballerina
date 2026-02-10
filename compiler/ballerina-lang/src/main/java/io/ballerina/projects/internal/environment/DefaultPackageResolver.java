@@ -96,8 +96,22 @@ public class DefaultPackageResolver implements PackageResolver {
             responseListInWorkspace.addAll(workspaceRepo.getPackageNames(requests, options));
         }
 
+        Collection<ImportModuleResponse> responseListInCustomFSRepo = new ArrayList<>();
+
+        for (Map.Entry<String, PackageRepository> entry : customRepos.entrySet()) {
+            if (entry.getValue() instanceof FileSystemRepository fsRepo) {
+                List<ImportModuleRequest> filteredReq = requests.stream().filter(re ->
+                        re.packageOrg().toString().equals(entry.getKey())).toList();
+                if (filteredReq.isEmpty()) {
+                    continue;
+                }
+                responseListInCustomFSRepo.addAll(fsRepo.getPackageNames(filteredReq, options));
+            }
+        }
+
         return new ArrayList<>(
-                Stream.of(responseListInWorkspace, responseListInDist, responseListInCentral)
+                Stream.of(responseListInCustomFSRepo, responseListInWorkspace,
+                                responseListInDist, responseListInCentral)
                         .flatMap(Collection::stream).collect(Collectors.toMap(
                         ImportModuleResponse::importModuleRequest, Function.identity(),
                         (ImportModuleResponse x, ImportModuleResponse y) -> {
@@ -218,8 +232,15 @@ public class DefaultPackageResolver implements PackageResolver {
         centralLoadRequests = centralLoadRequests.stream()
                 .filter(r -> !r.packageDescriptor().isBuiltInPackage())
                 .toList();
+
+        // Remove customFS resolved packages from the central requests
+        centralLoadRequests = centralLoadRequests.stream().filter(r -> allCustomRepoPackages.stream()
+                .noneMatch(resolvedReq -> resolvedReq.resolutionStatus().equals(ResolutionStatus.RESOLVED)
+                        && resolvedReq.packageLoadRequest().equals(r))).toList();
+
         Collection<PackageMetadataResponse> latestVersionsInCentral =
                 centralRepo.getPackageMetadata(centralLoadRequests, options);
+
 
         // TODO Unit test following merge
         List<PackageMetadataResponse> responseDescriptors = new ArrayList<>(
