@@ -175,6 +175,7 @@ public final class ObserveUtils {
      * Get a custom tag value.
      *
      * @param tagKey key of the tag
+     * @return value of the tag if it exists, else null
      */
     public static String getCustomTag(String tagKey) {
         return defaultTags.get(tagKey);
