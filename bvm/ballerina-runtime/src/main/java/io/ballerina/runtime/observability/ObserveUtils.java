@@ -174,10 +174,7 @@ public final class ObserveUtils {
      * @param tagKey key of the tag
      */
     public static String getCustomTag(String tagKey) {
-        if (defaultTags.containsKey(tagKey)) {
-            return defaultTags.get(tagKey);
-        }
-        return  null;
+        return defaultTags.get(tagKey);
     }
 
     /**
