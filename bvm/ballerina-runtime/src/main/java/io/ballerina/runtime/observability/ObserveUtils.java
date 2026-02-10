@@ -153,7 +153,7 @@ public final class ObserveUtils {
      * @param tagValue value of the tag
      */
     public static void addTag(String tagKey, String tagValue) {
-        if (!enabled || defaultTags.containsKey(tagKey)) {
+        if (!enabled) {
             return;
         }
         defaultTags.put(tagKey, tagValue);
