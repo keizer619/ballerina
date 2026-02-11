@@ -51,7 +51,7 @@
       "modules": []
     },
     {
-      "org": "luheerathan",
+      "org": "testorg",
       "name": "packd",
       "version": "0.1.0",
       "transitive": false,
@@ -70,7 +70,7 @@
   ],
   "modules": [
     {
-      "org": "luheerathan",
+      "org": "testorg",
       "package_name": "packd",
       "version": "0.1.0",
       "module_name": "packd",
