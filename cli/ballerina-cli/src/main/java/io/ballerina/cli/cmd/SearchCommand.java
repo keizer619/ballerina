@@ -199,13 +199,15 @@ public class SearchCommand implements BLauncherCmd {
         }
     }
 
-    private void searchInMvnProxy(String query, Repository centralProxyMavenRepository, Settings settings) throws CentralClientException, MavenResolverClientException {
+    private void searchInMvnProxy(String query, Repository centralProxyMavenRepository, Settings settings)
+            throws CentralClientException, MavenResolverClientException {
         MavenResolverClient client = new MavenResolverClient();
         intialiseMavenProxyClient(centralProxyMavenRepository, client, settings);
         Path homeReposPath = RepoUtils.createAndGetHomeReposPath().resolve(
                 Path.of(REPOSITORIES_DIR, CENTRAL_REPOSITORY_CACHE_NAME, BALA_DIR_NAME));
         boolean foundSearch = false;
-        MavenResolverClient.PkgSearchMavenMetadata packageSearchResult = client.getPkgSearchMetadata(query, homeReposPath);
+        MavenResolverClient.PkgSearchMavenMetadata packageSearchResult =
+                client.getPkgSearchMetadata(query, homeReposPath);
         List<MavenResolverClient.Package> packages = packageSearchResult.getPackages();
         List<Package> packageList = new ArrayList<>();
         for (MavenResolverClient.Package mvnPkg : packages) {
@@ -227,7 +229,8 @@ public class SearchCommand implements BLauncherCmd {
         }
     }
 
-    private static void intialiseMavenProxyClient(Repository centralProxyMavenRepository, MavenResolverClient mavenResolverClient, Settings settings) {
+    private static void intialiseMavenProxyClient(Repository centralProxyMavenRepository,
+                                                  MavenResolverClient mavenResolverClient, Settings settings) {
         if (!centralProxyMavenRepository.username().isEmpty() && !centralProxyMavenRepository.password().isEmpty()) {
             mavenResolverClient.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url(),
                     centralProxyMavenRepository.username(), centralProxyMavenRepository.password());

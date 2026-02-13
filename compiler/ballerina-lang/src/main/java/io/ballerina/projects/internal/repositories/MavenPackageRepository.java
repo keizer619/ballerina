@@ -18,9 +18,9 @@
 package io.ballerina.projects.internal.repositories;
 
 import com.github.zafarkhaja.semver.UnexpectedCharacterException;
+import com.github.zafarkhaja.semver.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.github.zafarkhaja.semver.Version;
 import io.ballerina.projects.DependencyGraph;
 import io.ballerina.projects.ModuleDescriptor;
 import io.ballerina.projects.Package;
@@ -46,9 +46,9 @@ import io.ballerina.projects.internal.model.Repository;
 import io.ballerina.projects.util.ProjectUtils;
 import org.apache.commons.io.FileUtils;
 import org.ballerinalang.central.client.CentralClientConstants;
-import org.ballerinalang.maven.bala.client.model.PackageResolutionResponse;
 import org.ballerinalang.maven.bala.client.MavenResolverClient;
 import org.ballerinalang.maven.bala.client.MavenResolverClientException;
+import org.ballerinalang.maven.bala.client.model.PackageResolutionResponse;
 import org.wso2.ballerinalang.util.RepoUtils;
 
 import java.io.BufferedReader;
@@ -169,7 +169,8 @@ public class MavenPackageRepository implements PackageRepository {
                 if  (isProxyCentral) {
                     remotePackageVersions = this.client.getPackageVersionsInCentralProxy(orgName, packageName,
                             Paths.get(repoLocation));
-                    remotePackageVersions.removeAll(getIncompatibleDistPkgVer(remotePackageVersions, orgName, packageName));
+                    remotePackageVersions.removeAll(getIncompatibleDistPkgVer(remotePackageVersions, orgName,
+                            packageName));
                 } else {
                     remotePackageVersions = this.client.getPackageVersions(orgName, packageName,
                             Paths.get(repoLocation));
@@ -218,7 +219,8 @@ public class MavenPackageRepository implements PackageRepository {
                     if (isProxyCentral) { // TODO : check central logic
                         packageVersions = this.client.getPackageVersionsInCentralProxy(
                                 orgName, packageName.toString(), Paths.get(repoLocation));
-                        packageVersions.removeAll(getIncompatibleDistPkgVer(packageVersions, orgName, packageName.toString()));
+                        packageVersions.removeAll(getIncompatibleDistPkgVer(packageVersions, orgName,
+                                packageName.toString()));
                     } else {
                         packageVersions = this.client.getPackageVersions(
                                 orgName, packageName.toString(), Paths.get(repoLocation));
@@ -314,7 +316,8 @@ public class MavenPackageRepository implements PackageRepository {
                                                                   PackageVersion version) {
         if (isProxyCentral) {
             try {
-                PackageResolutionResponse pkgResolutionResp = this.client.resolveDependency(org.value(), name.value(), version.toString(), repoLocation);
+                PackageResolutionResponse pkgResolutionResp = this.client.resolveDependency(org.value(), name.value(),
+                        version.toString(), repoLocation);
                 PackageResolutionResponse.Package resolved = pkgResolutionResp.resolved().getFirst();
                 return createPackageDependencyGraph(resolved);
             } catch (MavenResolverClientException e) {
@@ -341,12 +344,14 @@ public class MavenPackageRepository implements PackageRepository {
         return this.fileSystemRepo.isPackageExists(org, name, version);
     }
 
-    private List<String> getIncompatibleDistPkgVer(List<String> versions, String org, String name) throws MavenResolverClientException {
+    private List<String> getIncompatibleDistPkgVer(List<String> versions, String org, String name) throws
+            MavenResolverClientException {
         List<String> incompatibleVersions = new ArrayList<>();
         if (!versions.isEmpty()) {
             for (String ver : versions) {
                 String packBallerinaVer = RepoUtils.getBallerinaShortVersion();
-                String packageBallerinaVer = this.client.getBallerinaVersionForPackage(org, name, ver, Paths.get(repoLocation));
+                String packageBallerinaVer = this.client.getBallerinaVersionForPackage(org, name, ver,
+                        Paths.get(repoLocation));
                 if (!isCompatible(packageBallerinaVer, packBallerinaVer)) {
                     incompatibleVersions.add(ver);
                 }
@@ -437,15 +442,19 @@ public class MavenPackageRepository implements PackageRepository {
                                     if (y.resolutionStatus().equals(ResolutionResponse.ResolutionStatus.UNRESOLVED)) {
                                         // filesystem response is resolved &  remote response is unresolved
                                         return x;
-                                    } else if (x.resolutionStatus().equals(ResolutionResponse.ResolutionStatus.UNRESOLVED)) {
+                                    } else if (x.resolutionStatus().equals(ResolutionResponse
+                                            .ResolutionStatus.UNRESOLVED)) {
                                         // filesystem response is unresolved &  remote response is resolved
                                         return y;
-                                    } else if (x.resolvedDescriptor().version().equals(y.resolvedDescriptor().version())) {
-                                        // Both responses have the same version and there is a mismatch in deprecated status,
-                                        // we need to update the deprecated status in the file system repo
-                                        // to match the remote repo as it is the most up to date.
+                                    } else if (x.resolvedDescriptor().version().equals(y.resolvedDescriptor()
+                                            .version())) {
+                                        // Both responses have the same version and there is a mismatch in
+                                        // deprecated status,we need to update the deprecated
+                                        // status in the file system repo to match the remote repo as it is the most
+                                        // up to date.
                                         if (deprecatedPackages != null && y.resolvedDescriptor() != null &&
-                                                deprecatedPackages.contains(x) ^ y.resolvedDescriptor().getDeprecated()) {
+                                                deprecatedPackages.contains(x) ^ y.resolvedDescriptor()
+                                                        .getDeprecated()) {
                                             fileSystemRepo.updateDeprecatedStatusForPackage(y.resolvedDescriptor());
                                         }
                                         return x;

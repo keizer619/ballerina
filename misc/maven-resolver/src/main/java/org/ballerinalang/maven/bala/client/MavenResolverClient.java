@@ -51,16 +51,12 @@ import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.eclipse.aether.version.Version;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -73,6 +69,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 
 /**
@@ -227,7 +227,7 @@ public class MavenResolverClient {
                 PackageMavenMetadata metadata = getPackageMetadata(org, pkgName, localRepoPath);
                 metadataCache.put(cacheKey, metadata);
             }
-            return metadataCache.get(cacheKey).getVersions().stream(). filter(v -> v.getNumber().equals(version))
+            return metadataCache.get(cacheKey).getVersions().stream().filter(v -> v.getNumber().equals(version))
                     .map(BVersion::getBallerinaVersion)
                     .toList().getFirst();
         } catch (MavenResolverClientException e) {
@@ -243,7 +243,7 @@ public class MavenResolverClient {
                 PackageMavenMetadata metadata = getPackageMetadata(org, pkgName, localRepoPath);
                 metadataCache.put(cacheKey, metadata);
             }
-            return metadataCache.get(cacheKey).getVersions().stream(). filter(v -> v.getNumber().equals(version))
+            return metadataCache.get(cacheKey).getVersions().stream().filter(v -> v.getNumber().equals(version))
                     .map(BVersion::isDeprecated)
                     .toList().getFirst();
         } catch (MavenResolverClientException e) {
@@ -260,24 +260,26 @@ public class MavenResolverClient {
      * @return
      * @throws MavenResolverClientException when specified dependency cannot be resolved
      */
-    public PackageResolutionResponse resolveDependency(String groupId, String artifactId, String version, String targetLocation) throws
-            MavenResolverClientException {
+    public PackageResolutionResponse resolveDependency(String groupId, String artifactId, String version,
+                                                       String targetLocation) throws MavenResolverClientException {
 
         LocalRepository localRepo = new LocalRepository(targetLocation);
         session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo));
         // Disable checksum validation and hash file downloading
         session.setChecksumPolicy(org.eclipse.aether.repository.RepositoryPolicy.CHECKSUM_POLICY_IGNORE);
-        Artifact artifact = new DefaultArtifact(groupId, artifactId, "depgraph","json", version);
+        Artifact artifact = new DefaultArtifact(groupId, artifactId, "depgraph", "json", version);
         try {
             session.setTransferListener(new TransferListenerForClient());
             ArtifactRequest artifactRequest = new ArtifactRequest();
             artifactRequest.setArtifact(artifact);
             artifactRequest.addRepository(repository.build());
             system.resolveArtifact(session, artifactRequest);
-            String dependencyGraphStr = Files.readString(Paths.get(targetLocation).resolve(groupId).resolve(artifactId).resolve(version)
-                    .resolve(artifactId + "-" + version + "-depgraph.json"));
-            PackageResolutionResponse resolutionResponse = new Gson().fromJson(dependencyGraphStr, PackageResolutionResponse.class);
-            resolutionResponse.resolved().getFirst().setDeprecated(getDeprecationStatus(groupId, artifactId, version, Paths.get(targetLocation)));
+            String dependencyGraphStr = Files.readString(Paths.get(targetLocation).resolve(groupId).resolve(artifactId)
+                    .resolve(version).resolve(artifactId + "-" + version + "-depgraph.json"));
+            PackageResolutionResponse resolutionResponse = new Gson().fromJson(dependencyGraphStr,
+                    PackageResolutionResponse.class);
+            resolutionResponse.resolved().getFirst().setDeprecated(getDeprecationStatus(groupId, artifactId, version,
+                    Paths.get(targetLocation)));
             return resolutionResponse;
         } catch (ArtifactResolutionException | IOException e) {
             throw new MavenResolverClientException(e.getMessage());
@@ -294,7 +296,8 @@ public class MavenResolverClient {
      * @return PackageMetadata object containing parsed XML metadata
      * @throws Exception when metadata resolution or XML parsing fails
      */
-    private PackageMavenMetadata getPackageMetadata(String groupId, String artifactId, Path localRepoPath) throws MavenResolverClientException {
+    private PackageMavenMetadata getPackageMetadata(String groupId, String artifactId, Path localRepoPath)
+            throws MavenResolverClientException {
         LocalRepository localRepo = new LocalRepository(localRepoPath.toAbsolutePath().toString());
         session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo));
         session.setOffline(false);
@@ -338,9 +341,10 @@ public class MavenResolverClient {
      * @param query    artifact ID of the package
      * @param localRepoPath path to the local Maven repository
      * @return PkgSearchMavenMetadata object containing parsed XML metadata
-     * @throws Exception when metadata resolution or XML parsing fails
+     * @throws MavenResolverClientException when metadata resolution or XML parsing fails
      */
-    public PkgSearchMavenMetadata getPkgSearchMetadata(String query, Path localRepoPath) throws MavenResolverClientException {
+    public PkgSearchMavenMetadata getPkgSearchMetadata(String query, Path localRepoPath)
+            throws MavenResolverClientException {
         LocalRepository localRepo = new LocalRepository(localRepoPath.toAbsolutePath().toString());
         session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo));
         session.setOffline(false);

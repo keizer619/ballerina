@@ -51,7 +51,6 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -274,7 +273,8 @@ public class PullCommand implements BLauncherCmd {
         return version;
     }
 
-    private String pullFromMvnProxy(Settings settings, Repository centralProxyMavenRepository, String orgName, String packageName, String version) throws MavenResolverClientException {
+    private String pullFromMvnProxy(Settings settings, Repository centralProxyMavenRepository, String orgName,
+                                    String packageName, String version) throws MavenResolverClientException {
         MavenResolverClient client = new MavenResolverClient();
         if (!centralProxyMavenRepository.username().isEmpty() && !centralProxyMavenRepository.password().isEmpty()) {
             client.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url(),
@@ -290,12 +290,14 @@ public class PullCommand implements BLauncherCmd {
                 .resolve(ProjectConstants.CENTRAL_REPOSITORY_CACHE_NAME)
                 .resolve(ProjectConstants.BALA_DIR_NAME)
                 .resolve(orgName).resolve(packageName);
-        if (version.isEmpty()){
+        if (version.isEmpty()) {
             //TODO :  Need to check this logic whether central client will return all versions
             // or only compatible versions with the current ballerina version. If it returns all versions,
             // we need to filter the versions which are compatible with the current ballerina version.
-            List<String> packageVersions = client.getPackageVersionsInCentralProxy(orgName, packageName, mavenPackageRootPath);
-            List<String> incompatibleVersions = getIncompatibleDistPkgVer(packageVersions, orgName, packageName, client, mavenPackageRootPath);
+            List<String> packageVersions = client.getPackageVersionsInCentralProxy(orgName,
+                    packageName, mavenPackageRootPath);
+            List<String> incompatibleVersions = getIncompatibleDistPkgVer(packageVersions, orgName,
+                    packageName, client, mavenPackageRootPath);
             packageVersions.removeAll(incompatibleVersions);
             List<PackageVersion> packageVersionsList = new ArrayList<>();
             packageVersions.stream().map(PackageVersion::from).forEach(packageVersionsList::add);
@@ -329,7 +331,9 @@ public class PullCommand implements BLauncherCmd {
     }
 
 
-    private List<String> getIncompatibleDistPkgVer(List<String> versions, String org, String name, MavenResolverClient client, Path mavenPackageRootPath) throws MavenResolverClientException {
+    private List<String> getIncompatibleDistPkgVer(List<String> versions, String org, String name,
+                                                   MavenResolverClient client, Path mavenPackageRootPath)
+            throws MavenResolverClientException {
         List<String> incompatibleVersions = new ArrayList<>();
         if (!versions.isEmpty()) {
             for (String ver : versions) {
@@ -378,7 +382,8 @@ public class PullCommand implements BLauncherCmd {
         return false;
     }
 
-    private String pullFromBCentral(Settings settings, String orgName, String packageName, String version, Path packagePathInBalaCache) throws CentralClientException {
+    private String pullFromBCentral(Settings settings, String orgName, String packageName, String version,
+                                    Path packagePathInBalaCache) throws CentralClientException {
         CentralAPIClient client;
         String supportedPlatform = Arrays.stream(JvmTarget.values())
                 .map(JvmTarget::code)

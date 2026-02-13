@@ -177,9 +177,11 @@ public class SettingsBuilder {
                         repositoryUsername = getStringOrDefaultFromTomlTableNode(repositoryNode, USERNAME, "");
                         repositoryPassword = getStringOrDefaultFromTomlTableNode(repositoryNode, ACCESS_TOKEN, "");
                         String pathStr = getStringOrDefaultFromTomlTableNode(repositoryNode, PATH, "");
-                        boolean proxyCentral = getBooleanOrDefaultFromTomlTableNode(repositoryNode, PROXY_CENTRAL, false);
+                        boolean proxyCentral = getBooleanOrDefaultFromTomlTableNode(repositoryNode,
+                                PROXY_CENTRAL, false);
                         if (proxyCentral && proxyCentralFound) {
-                            throw new ProjectException("Multiple repositories cannot be configured to proxy Ballerina central.");
+                            throw new ProjectException("Multiple repositories cannot be configured to " +
+                                    "proxy Ballerina central.");
                         }
                         if (proxyCentral) {
                             proxyCentralFound = true;
@@ -273,6 +275,4 @@ public class SettingsBuilder {
         }
         return null;
     }
-
-
 }

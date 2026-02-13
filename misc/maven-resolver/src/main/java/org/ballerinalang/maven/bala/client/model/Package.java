@@ -20,7 +20,7 @@ package org.ballerinalang.maven.bala.client.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.lang.Module;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
