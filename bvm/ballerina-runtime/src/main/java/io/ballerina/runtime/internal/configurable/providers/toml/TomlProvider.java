@@ -415,7 +415,7 @@ public class TomlProvider implements ConfigProvider {
                 BTupleType tupleType = (BTupleType) ((BIntersectionType) key.type).getEffectiveType();
                 TomlType tomlType = tomlValue.kind();
                 if (tomlType != TomlType.KEY_VALUE) {
-                    throwTypeIncompatibleError(tomlValue, key.variable, tupleType);
+                    return Optional.empty();
                 }
                 visitedNodes.add(tomlValue);
                 validateTupleValue(((TomlKeyValueNode) tomlValue).value(), key.variable, tupleType);
@@ -475,7 +475,7 @@ public class TomlProvider implements ConfigProvider {
     private TomlNode getTomlNode(TomlNode tomlValue, String variableName, Type type) {
         TomlType tomlType = tomlValue.kind();
         if (tomlType != TomlType.KEY_VALUE) {
-            throwTypeIncompatibleError(tomlValue, variableName, type);
+            return null;
         }
         visitedNodes.add(tomlValue);
         tomlValue = ((TomlKeyValueNode) tomlValue).value();
@@ -635,7 +635,7 @@ public class TomlProvider implements ConfigProvider {
     private void validatePrimitiveValue(TomlNode tomlValue, String variableName, Type type) {
         TomlType tomlType = tomlValue.kind();
         if (tomlType != TomlType.KEY_VALUE) {
-            throwTypeIncompatibleError(tomlValue, variableName, type);
+            return;
         }
         visitedNodes.add(tomlValue);
         TomlValueNode value = ((TomlKeyValueNode) tomlValue).value();
