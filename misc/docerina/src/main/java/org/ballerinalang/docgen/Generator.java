@@ -802,7 +802,8 @@ public final class Generator {
                 }
                 String defaultValue = recordField.expression().toString();
                 Type type = Type.fromNode(recordField.typeName(), semanticModel, module);
-                DefaultableVariable defaultableVariable = new DefaultableVariable(name, doc, false, type,
+                DefaultableVariable defaultableVariable = new DefaultableVariable(name, doc,
+                        isDeprecated(recordField.metadata()), type,
                         defaultValue, extractAnnotationAttachmentsFromMetadataNode(semanticModel,
                         recordField.metadata()));
                 if (recordField.readonlyKeyword().isPresent()) {
