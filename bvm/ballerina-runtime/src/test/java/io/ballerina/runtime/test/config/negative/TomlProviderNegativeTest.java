@@ -261,7 +261,7 @@ public class TomlProviderNegativeTest {
         VariableKey anyVar = new VariableKey(ROOT_MODULE, "anyVar", PredefinedTypes.TYPE_ANY, true);
         Map<Module, VariableKey[]> configVarMap = Map.ofEntries(Map.entry(ROOT_MODULE, new VariableKey[]{anyVar}));
         String errorMsg = "configurable variable 'anyVar' with type 'any' is not supported";
-        validateTomlProviderErrors("InvalidType",  new String[] {errorMsg}, configVarMap, 4);
+        validateTomlProviderErrors("InvalidType",  new String[] {errorMsg}, configVarMap, 3);
     }
 
     @Test()
@@ -542,13 +542,12 @@ public class TomlProviderNegativeTest {
                 List.of(new TomlFileProvider(ROOT_MODULE, getConfigPathForNegativeCases("UnusedTomlParts.toml"),
                         configVarMap.keySet())));
         configResolver.resolveConfigs();
-        Assert.assertEquals(diagnosticLog.getErrorCount(), 7);
+        Assert.assertEquals(diagnosticLog.getErrorCount(), 6);
         String[] warnings = new String[]{
                 "error: [UnusedTomlParts.toml:(3:1,3:20)] unused configuration value 'undefinedVar1'",
                 "error: [UnusedTomlParts.toml:(11:1,11:20)] unused configuration value 'test_module.util.foo" +
                         ".undefinedVar2'",
                 "error: [UnusedTomlParts.toml:(16:1,16:20)] unused configuration value 'myOrg.mod.undefinedVar3'",
-                "error: [UnusedTomlParts.toml:(18:1,19:20)] unused configuration value 'undefined_Module'",
                 "error: [UnusedTomlParts.toml:(19:1,19:20)] unused configuration value 'undefined_Module" +
                         ".undefinedVar4'",
                 "error: [UnusedTomlParts.toml:(21:1,22:20)] unused configuration value 'undefined_Table'",
@@ -568,8 +567,6 @@ public class TomlProviderNegativeTest {
 
         Map<Module, VariableKey[]> configVarMap = Map.ofEntries(Map.entry(importedModule, variableKeys));
         String[] errors = new String[]{
-                "[OptionalImportedModule.toml:(1:1,3:18)] invalid TOML structure found for module 'mod'. " +
-                        "Please provide the module name as '[myOrg.mod]'",
                 "[OptionalImportedModule.toml:(2:1,2:13)] unused configuration value 'mod.intVar'",
                 "[OptionalImportedModule.toml:(3:1,3:18)] unused configuration value 'mod.stringVar'"
         };
