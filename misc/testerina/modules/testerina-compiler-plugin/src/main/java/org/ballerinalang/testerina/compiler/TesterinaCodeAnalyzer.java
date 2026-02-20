@@ -48,7 +48,6 @@ public class TesterinaCodeAnalyzer extends CodeAnalyzer {
 
     @Override
     public void init(CodeAnalysisContext analysisContext) {
-        analysisContext.addSyntaxNodeAnalysisTask(new EvalAnnotationAnalyzerTask(), List.of(SyntaxKind.ANNOTATION));
         analysisContext.addSyntaxNodeAnalysisTask(syntaxNodeAnalysisContext -> {
             // Traverses class and service definition nodes to check if test definitions are specified within
             // the class for functions
@@ -60,6 +59,7 @@ public class TesterinaCodeAnalyzer extends CodeAnalyzer {
                     validateTestAnnotation(syntaxNodeAnalysisContext, member));
             }
         }, Arrays.asList(SyntaxKind.CLASS_DEFINITION, SyntaxKind.SERVICE_DECLARATION));
+        analysisContext.addSyntaxNodeAnalysisTask(new ConfigAnnotationAnalyzerTask(), List.of(SyntaxKind.ANNOTATION));
     }
 
     private static void validateTestAnnotation(SyntaxNodeAnalysisContext syntaxNodeAnalysisContext, Node member) {

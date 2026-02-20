@@ -9,7 +9,7 @@ WARNING: Test function 'testNonIsolatedEval' cannot be parallelized, reason: non
 WARNING: Test function 'testNonIsolatedEvalWithDataProvider' cannot be parallelized, reason: non-isolated test function
 		[pass] testIsolatedEvalWithDataProvider
 
-		    evaluation passed with an average confidence of 1.0
+		    evaluation passed with an average pass rate of 1.0
 			
 
 

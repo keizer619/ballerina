@@ -44,3 +44,8 @@ enum TestCompletionStatus {
     SUSPENDED,
     COMPLETED
 }
+
+type EvaluationConfig record {
+    float minPassRate;
+    int runs;
+};

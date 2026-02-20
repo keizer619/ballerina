@@ -35,8 +35,8 @@ type ResultData record {|
 
 type EvaluationSummary record {|
     EvaluationRuns evaluationRuns;
-    float targetConfidence;
-    float observedConfidence;
+    float targetPassRate;
+    float observedPassRate;
 |};
 
 type EvaluationRuns EvaluationRunWithoutDataSet[]|EvaluationRunWithDataSet[];
@@ -221,7 +221,7 @@ isolated function printEvaluationReportInConsole(Result entry) {
     EvaluationRuns evalRuns = eval.evaluationRuns;
     if evalRuns is EvaluationRunWithDataSet[] {
         foreach EvaluationRunWithDataSet run in evalRuns {
-            println("\n\t\t\t\t" + string `    iteration: ${run.id}`);
+            println("\n\t\t\t\t" + string `    run: ${run.id}`);
             foreach EvaluationOutcome outcome in run.outcomes {
                 println(string `${"\n\t\t\t\t\t"}    entry: ${outcome.id}` +
                         string `${"\n\t\t\t\t\t"}    message: ${getConsoleMessage(outcome.errorMessage, "\n\t\t\t\t\t\t\t")}`);
@@ -231,7 +231,7 @@ isolated function printEvaluationReportInConsole(Result entry) {
     }
     if evalRuns is EvaluationRunWithoutDataSet[] {
         foreach EvaluationRunWithoutDataSet run in evalRuns {
-            println(string `${"\n\t\t\t\t"}    iteration: ${run.id}` +
+            println(string `${"\n\t\t\t\t"}    run: ${run.id}` +
                     string `${"\n\t\t\t\t\t"}    message: ${getConsoleMessage(run.errorMessage, "\n\t\t\t\t\t\t\t")}`);
         }
         return;
@@ -368,8 +368,8 @@ function replaceDoubleQuotesInEvaluationErrorMessage(EvaluationSummary? eval) re
         }
         return {
             evaluationRuns: transformedRuns,
-            observedConfidence: eval.observedConfidence,
-            targetConfidence: eval.targetConfidence
+            observedPassRate: eval.observedPassRate,
+            targetPassRate: eval.targetPassRate
         };
     }
 
@@ -389,8 +389,8 @@ function replaceDoubleQuotesInEvaluationErrorMessage(EvaluationSummary? eval) re
         }
         return {
             evaluationRuns: transformedRuns,
-            observedConfidence: eval.observedConfidence,
-            targetConfidence: eval.targetConfidence
+            observedPassRate: eval.observedPassRate,
+            targetPassRate: eval.targetPassRate
         };
     }
     return;

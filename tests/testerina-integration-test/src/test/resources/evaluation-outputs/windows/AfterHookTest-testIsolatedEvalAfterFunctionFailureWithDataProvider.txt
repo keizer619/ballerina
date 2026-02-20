@@ -12,10 +12,10 @@ WARNING: Test function 'testNonIsolatedEvalAfterFunctionFailureWithDataProvider'
 	[fail] [after test function for the test]:
 	    error("after hook method failed")
 			callableName: afterHookFail moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 21
-			callableName: afterHookFail$lambda8$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 96
+			callableName: afterHookFail$lambda8$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 84
 			callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-			callableName: executeFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 348
-			callableName: executeAfterFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 339
+			callableName: executeFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 367
+			callableName: executeAfterFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 358
 			callableName: executeDataDrivenEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 165
 			callableName: executeDataDrivenTestSetIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 60
 			callableName: executeTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 28
@@ -24,10 +24,10 @@ WARNING: Test function 'testNonIsolatedEvalAfterFunctionFailureWithDataProvider'
 	[fail] [after test function for the test]:
 	    error("after hook method failed")
 			callableName: afterHookFail moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 21
-			callableName: afterHookFail$lambda8$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 96
+			callableName: afterHookFail$lambda8$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 84
 			callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-			callableName: executeFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 348
-			callableName: executeAfterFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 339
+			callableName: executeFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 367
+			callableName: executeAfterFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 358
 			callableName: executeDataDrivenEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 165
 			callableName: executeDataDrivenTestSetIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 60
 			callableName: executeTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 28
@@ -36,10 +36,10 @@ WARNING: Test function 'testNonIsolatedEvalAfterFunctionFailureWithDataProvider'
 	[fail] [after test function for the test]:
 	    error("after hook method failed")
 			callableName: afterHookFail moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 21
-			callableName: afterHookFail$lambda8$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 96
+			callableName: afterHookFail$lambda8$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 84
 			callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-			callableName: executeFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 348
-			callableName: executeAfterFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 339
+			callableName: executeFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 367
+			callableName: executeAfterFunctionIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 358
 			callableName: executeDataDrivenEvaluationIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 165
 			callableName: executeDataDrivenTestSetIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 60
 			callableName: executeTestIsolated moduleName: ballerina.test.0 fileName: concurrentExecuter.bal lineNumber: 28
@@ -47,7 +47,7 @@ WARNING: Test function 'testNonIsolatedEvalAfterFunctionFailureWithDataProvider'
 		
 		[pass] testIsolatedEvalAfterFunctionFailureWithDataProvider
 
-		    evaluation passed with an average confidence of 1.0
+		    evaluation passed with an average pass rate of 1.0
 			
 
 

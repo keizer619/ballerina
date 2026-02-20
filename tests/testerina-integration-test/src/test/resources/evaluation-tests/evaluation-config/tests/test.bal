@@ -16,18 +16,16 @@
 
 import ballerina/test;
 
-@test:Config
-@test:EvalConfig {
-    confidence: 2,
-    iterations: 1
+@test:Config {
+    minPassRate: 2,
+    runs: 1
 }
-function testInvalidConfidenceValue() returns error? {
+function testInvalidMinPassRateValue() returns error? {
 }
 
-@test:Config
-@test:EvalConfig {
-    confidence: 0.4,
-    iterations: 0
+@test:Config {
+    minPassRate: 0.4,
+    runs: 0
 }
-isolated function testInvalidIterationValue() returns error? {
+isolated function testInvalidRunsValue() returns error? {
 }

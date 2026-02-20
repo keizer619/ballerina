@@ -35,17 +35,17 @@ import java.text.MessageFormat;
 import static org.ballerinalang.testerina.compiler.TesterinaCompilerPluginConstants.TEST_MODULE_NAME;
 
 /**
- * Code analyzer for the Testerina EvaluationConfig annotation analysis.
+ * Code analyzer for the Testerina @test:Config annotation analysis.
  *
  * @since 2201.13.0
  */
-public class EvalAnnotationAnalyzerTask implements AnalysisTask<SyntaxNodeAnalysisContext> {
-    private static final String INVALID_EVAL_CONFIG_CONFIDENCE_ERROR_CODE = "TEST_102";
-    private static final String INVALID_EVAL_CONFIG_CONFIDENCE_ERROR_MESSAGE = "invalid evaluation config:" +
-            " 'confidence' must be between 0.0 and 1.0, found: {0}";
-    private static final String INVALID_EVAL_CONFIG_ITERATION_ERROR_CODE = "TEST_102";
-    private static final String INVALID_EVAL_CONFIG_ITERATION_ERROR_MESSAGE = "invalid evaluation config:" +
-            " 'iterations' must be a positive integer, found: {0}";
+public class ConfigAnnotationAnalyzerTask implements AnalysisTask<SyntaxNodeAnalysisContext> {
+    private static final String INVALID_MIN_PASS_RATE_ERROR_CODE = "TEST_102";
+    private static final String INVALID_MIN_PASS_RATE_ERROR_MESSAGE = "invalid config:" +
+            " 'minPassRate' must be between 0.0 and 1.0, found: {0}";
+    private static final String INVALID_RUNS_ERROR_CODE = "TEST_102";
+    private static final String INVALID_RUNS_ERROR_MESSAGE = "invalid config:" +
+            " 'runs' must be a positive integer, found: {0}";
 
     @Override
     public void perform(SyntaxNodeAnalysisContext syntaxNodeAnalysisContext) {
@@ -75,43 +75,43 @@ public class EvalAnnotationAnalyzerTask implements AnalysisTask<SyntaxNodeAnalys
                                       SpecificFieldNode fieldNode) {
         String fieldName = fieldNode.fieldName().toSourceCode().trim();
         switch (fieldName) {
-            case "confidence" -> validateConfidence(context, annotation, fieldNode);
-            case "iterations" -> validateIterations(context, annotation, fieldNode);
+            case "minPassRate" -> validateMinPassRate(context, annotation, fieldNode);
+            case "runs" -> validateRun(context, annotation, fieldNode);
             default -> {
             }
         }
     }
 
-    private static void validateConfidence(SyntaxNodeAnalysisContext context, AnnotationNode annotation,
-                                           SpecificFieldNode fieldNode) {
+    private static void validateMinPassRate(SyntaxNodeAnalysisContext context, AnnotationNode annotation,
+                                            SpecificFieldNode fieldNode) {
         fieldNode.valueExpr().ifPresent(valueExpr -> {
             String confidenceStr = valueExpr.toSourceCode().trim();
             try {
                 float confidence = Float.parseFloat(confidenceStr);
                 if (confidence < 0.0f || confidence > 1.0f) {
-                    reportDiagnosticError(context, annotation, INVALID_EVAL_CONFIG_CONFIDENCE_ERROR_CODE,
-                            MessageFormat.format(INVALID_EVAL_CONFIG_CONFIDENCE_ERROR_MESSAGE, confidenceStr));
+                    reportDiagnosticError(context, annotation, INVALID_MIN_PASS_RATE_ERROR_CODE,
+                            MessageFormat.format(INVALID_MIN_PASS_RATE_ERROR_MESSAGE, confidenceStr));
                 }
             } catch (NumberFormatException e) {
-                reportDiagnosticError(context, annotation, INVALID_EVAL_CONFIG_CONFIDENCE_ERROR_CODE,
-                        MessageFormat.format(INVALID_EVAL_CONFIG_CONFIDENCE_ERROR_MESSAGE, confidenceStr));
+                reportDiagnosticError(context, annotation, INVALID_MIN_PASS_RATE_ERROR_CODE,
+                        MessageFormat.format(INVALID_MIN_PASS_RATE_ERROR_MESSAGE, confidenceStr));
             }
         });
     }
 
-    private static void validateIterations(SyntaxNodeAnalysisContext context, AnnotationNode annotation,
-                                           SpecificFieldNode fieldNode) {
+    private static void validateRun(SyntaxNodeAnalysisContext context, AnnotationNode annotation,
+                                    SpecificFieldNode fieldNode) {
         fieldNode.valueExpr().ifPresent(valueExpr -> {
             String iterationsStr = valueExpr.toSourceCode().trim();
             try {
                 int iterations = Integer.parseInt(iterationsStr);
                 if (iterations <= 0) {
-                    reportDiagnosticError(context, annotation, INVALID_EVAL_CONFIG_ITERATION_ERROR_CODE,
-                            MessageFormat.format(INVALID_EVAL_CONFIG_ITERATION_ERROR_MESSAGE, iterationsStr));
+                    reportDiagnosticError(context, annotation, INVALID_RUNS_ERROR_CODE,
+                            MessageFormat.format(INVALID_RUNS_ERROR_MESSAGE, iterationsStr));
                 }
             } catch (NumberFormatException e) {
-                reportDiagnosticError(context, annotation, INVALID_EVAL_CONFIG_ITERATION_ERROR_CODE,
-                        MessageFormat.format(INVALID_EVAL_CONFIG_ITERATION_ERROR_MESSAGE, iterationsStr));
+                reportDiagnosticError(context, annotation, INVALID_RUNS_ERROR_CODE,
+                        MessageFormat.format(INVALID_RUNS_ERROR_MESSAGE, iterationsStr));
             }
         });
     }

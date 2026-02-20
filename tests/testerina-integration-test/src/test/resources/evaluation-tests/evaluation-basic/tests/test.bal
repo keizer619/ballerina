@@ -25,41 +25,35 @@ isolated function goldenDataSet() returns map<[string]> {
     return dataSet;
 }
 
-@test:Config
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+@test:Config {
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEval() returns error? {
 }
 
 int value = 0;
 
-@test:Config
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+@test:Config {
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEval() returns error? {
     value += 1;
 }
 
 @test:Config {
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalWithDataProvider(string query) returns error? {
 }
 
 @test:Config {
-    dataProvider: goldenDataSet
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dataProvider: goldenDataSet,
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEvalWithDataProvider(string query) returns error? {
     value += 1;

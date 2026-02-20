@@ -5,8 +5,8 @@ Compiling source
 Running Tests with Coverage
 
 	failures
-WARNING: Test function 'testNonIsolatedEvalFailureWithLowConfidence' cannot be parallelized, reason: non-isolated test function
-WARNING: Test function 'testNonIsolatedEvalFailureWithLowConfidenceWithDataProvider' cannot be parallelized, reason: non-isolated test function
+WARNING: Test function 'testNonIsolatedEvalFailureWithLowPassRate' cannot be parallelized, reason: non-isolated test function
+WARNING: Test function 'testNonIsolatedEvalFailureWithLowPassRateWithDataProvider' cannot be parallelized, reason: non-isolated test function
 WARNING: Test function 'testNonIsolatedEvalFailureForInvalidInput' cannot be parallelized, reason: non-isolated test function
 WARNING: Test function 'testNonIsolatedEvalFailureForInvalidInputWithDataProvider' cannot be parallelized, reason: non-isolated test function
 WARNING: Test function 'testNonIsolatedEvalFailureForEmptyDataProvider' cannot be parallelized, reason: non-isolated test function
@@ -19,8 +19,8 @@ WARNING: Test function 'testNonIsolatedEvalReturningErrorWithDataProvider' canno
 		    [fail data provider for the function testNonIsolatedEvalFailureForInvalidInputWithDataProvider]
 			error("{ballerina/lang.function}IncompatibleArguments",message="arguments of incompatible types: argument list '(string)' cannot be passed to function expecting parameter list '(int)'")
 				callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-				callableName: callEvaluationFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 279
-				callableName: executeEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 268
+				callableName: callEvaluationFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 291
+				callableName: executeEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 280
 				callableName: executeDataDrivenEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 111
 				callableName: executeDataDrivenTestSet moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 60
 				callableName: executeTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 30

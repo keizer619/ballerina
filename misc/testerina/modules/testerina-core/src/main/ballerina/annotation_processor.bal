@@ -109,11 +109,10 @@ function processConfigAnnotation(string name, function f) returns boolean {
                 || !executionManager.isParallelExecutionEnabled()
                 || !isSatisfiedParallelizableConditions;
 
-        EvaluationConfig? evalConfig = (typeof f).@EvalConfig;
         testRegistry.addFunction(name = name, executableFunction = f, before = config.before,
             after = config.after, groups = config.groups.cloneReadOnly(), diagnostics = diagnostics,
             dependsOn = config.dependsOn.cloneReadOnly(), serialExecution = serialExecution,
-            config = config.cloneReadOnly(), evalConfig = evalConfig.cloneReadOnly());
+            config = config.cloneReadOnly());
         executionManager.createTestFunctionMetaData(functionName = name, dependsOnCount = config.dependsOn.length(),
             enabled = enabled);
     }
