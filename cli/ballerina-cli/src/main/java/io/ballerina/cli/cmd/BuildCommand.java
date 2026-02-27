@@ -208,6 +208,10 @@ public class BuildCommand implements BLauncherCmd {
             " the services in the current package")
     private Boolean exportOpenAPI;
 
+    @CommandLine.Option(names = "--export-endpoints", description = "generate endpoint details for all" +
+            " the services in the current package")
+    private Boolean exportEndpoints;
+
     @CommandLine.Option(names = "--export-component-model", description = "generate a model to represent " +
             "interactions between the package components (i.e. service/type definitions) and, export it in JSON format",
             hidden = true)
@@ -519,6 +523,7 @@ public class BuildCommand implements BLauncherCmd {
                 .setSticky(this.sticky)
                 .setConfigSchemaGen(configSchemaGen)
                 .setExportOpenAPI(exportOpenAPI)
+                .setExportEndpoints(exportEndpoints)
                 .setExportComponentModel(exportComponentModel)
                 .setNativeImage(nativeImage)
                 .disableSyntaxTreeCaching(disableSyntaxTreeCaching)
