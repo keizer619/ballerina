@@ -18,10 +18,9 @@ import ballerina/test;
 
 int value = 0;
 
-@test:Config
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 1
+@test:Config {
+    minPassRate: 0.8,
+    runs: 1
 }
 function myEval() returns error? {
     return error("eval failed");
@@ -29,22 +28,18 @@ function myEval() returns error? {
 
 @test:Config {
     dataProvider: goldenDataSet,
-    dependsOn: [myEval]
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dependsOn: [myEval],
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEval(string query) returns error? {
     println("testIsolatedEval");
 }
 
 @test:Config {
-    dependsOn: [testIsolatedEval]
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dependsOn: [testIsolatedEval],
+    minPassRate: 1,
+    runs: 3
 }
 function testNonIsolatedEval() returns error? {
     value += 1;
@@ -52,11 +47,9 @@ function testNonIsolatedEval() returns error? {
 }
 
 @test:Config {
-    dependsOn: [myEval]
-}
-@test:EvalConfig {
-    confidence: 1,
-    iterations: 3
+    dependsOn: [myEval],
+    minPassRate: 1,
+    runs: 3
 }
 isolated function testIsolatedEvalWithoutDataProvider() returns error? {
     println("testIsolatedEvalWithoutDataProvider");

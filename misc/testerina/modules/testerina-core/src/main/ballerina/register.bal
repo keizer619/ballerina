@@ -36,7 +36,6 @@ type TestFunction record {|
     readonly & function[] dependsOn = [];
     boolean serialExecution = false;
     TestConfig? config = ();
-    EvaluationConfig? evalConfig = ();
 |} & readonly;
 
 type TestFunctionMetaData record {|

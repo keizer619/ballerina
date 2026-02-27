@@ -12,12 +12,12 @@ WARNING: Test function 'testNonIsolatedEvalAfterFunctionFailureWithDataProvider'
 	[fail] [after test function for the test]:
 	    error("after hook method failed")
 			callableName: afterHookFail moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 21
-			callableName: afterHookFail$lambda7$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 85
+			callableName: afterHookFail$lambda7$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 75
 			callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-			callableName: executeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 299
-			callableName: executeAfterFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 293
-			callableName: executeNonDataDrivenEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 200
-			callableName: executeNonDataDrivenTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 160
+			callableName: executeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 311
+			callableName: executeAfterFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 305
+			callableName: executeNonDataDrivenEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 207
+			callableName: executeNonDataDrivenTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 167
 			callableName: executeTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 32
 			callableName: executeTests moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 81
 			callableName: startSuite moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 53
@@ -26,12 +26,12 @@ WARNING: Test function 'testNonIsolatedEvalAfterFunctionFailureWithDataProvider'
 	[fail] [after test function for the test]:
 	    error("after hook method failed")
 			callableName: afterHookFail moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 21
-			callableName: afterHookFail$lambda7$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 85
+			callableName: afterHookFail$lambda7$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 75
 			callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-			callableName: executeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 299
-			callableName: executeAfterFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 293
-			callableName: executeNonDataDrivenEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 200
-			callableName: executeNonDataDrivenTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 160
+			callableName: executeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 311
+			callableName: executeAfterFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 305
+			callableName: executeNonDataDrivenEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 207
+			callableName: executeNonDataDrivenTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 167
 			callableName: executeTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 32
 			callableName: executeTests moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 81
 			callableName: startSuite moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 53
@@ -40,12 +40,12 @@ WARNING: Test function 'testNonIsolatedEvalAfterFunctionFailureWithDataProvider'
 	[fail] [after test function for the test]:
 	    error("after hook method failed")
 			callableName: afterHookFail moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 21
-			callableName: afterHookFail$lambda7$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 85
+			callableName: afterHookFail$lambda7$ moduleName: evaluation.after_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 75
 			callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-			callableName: executeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 299
-			callableName: executeAfterFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 293
-			callableName: executeNonDataDrivenEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 200
-			callableName: executeNonDataDrivenTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 160
+			callableName: executeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 311
+			callableName: executeAfterFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 305
+			callableName: executeNonDataDrivenEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 207
+			callableName: executeNonDataDrivenTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 167
 			callableName: executeTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 32
 			callableName: executeTests moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 81
 			callableName: startSuite moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 53
@@ -53,7 +53,7 @@ WARNING: Test function 'testNonIsolatedEvalAfterFunctionFailureWithDataProvider'
 		
 		[pass] testNonIsolatedEvalAfterFunctionFailure
 
-		    evaluation passed with an average confidence of 1.0
+		    evaluation passed with an average pass rate of 1.0
 			
 
 

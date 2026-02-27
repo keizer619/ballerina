@@ -17,7 +17,7 @@ before function executed
 run
 		[pass] testIsolatedEval
 
-		    evaluation passed with an average confidence of 1.0
+		    evaluation passed with an average pass rate of 1.0
 			
 
 

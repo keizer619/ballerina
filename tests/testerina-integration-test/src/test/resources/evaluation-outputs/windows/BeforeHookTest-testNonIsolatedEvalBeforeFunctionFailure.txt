@@ -12,12 +12,12 @@ WARNING: Test function 'testNonIsolatedEvalBeforeFunctionFailureWithDataProvider
 	[fail] [before test function for the test]:
 	    error("before hook method failed")
 			callableName: beforeHookFail moduleName: evaluation.before_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 21
-			callableName: beforeHookFail$lambda7$ moduleName: evaluation.before_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 85
+			callableName: beforeHookFail$lambda7$ moduleName: evaluation.before_hook$test.0.tests.test fileName: tests/test.bal lineNumber: 75
 			callableName: call moduleName: ballerina.lang.function.0 fileName: function.bal lineNumber: 37
-			callableName: executeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 299
-			callableName: executeBeforeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 262
-			callableName: executeNonDataDrivenEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 183
-			callableName: executeNonDataDrivenTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 160
+			callableName: executeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 311
+			callableName: executeBeforeFunction moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 274
+			callableName: executeNonDataDrivenEvaluation moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 190
+			callableName: executeNonDataDrivenTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 167
 			callableName: executeTest moduleName: ballerina.test.0 fileName: serialExecuter.bal lineNumber: 32
 			callableName: executeTests moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 81
 			callableName: startSuite moduleName: ballerina.test.0 fileName: execute.bal lineNumber: 53
