@@ -277,6 +277,7 @@ public class BuildOptions {
         TARGET_DIR("targetDir"),
         NATIVE_IMAGE("graalvm"),
         EXPORT_COMPONENT_MODEL("exportComponentModel"),
+        EXPORT_ENDPOINTS("expotrtEndpoints"),
         GRAAL_VM_BUILD_OPTIONS("graalvmBuildOptions"),
         SHOW_DEPENDENCY_DIAGNOSTICS("showDependencyDiagnostics"),
         OPTIMIZE_DEPENDENCY_COMPILATION("optimizeDependencyCompilation"),
