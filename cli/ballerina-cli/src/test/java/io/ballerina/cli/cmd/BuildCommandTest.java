@@ -1966,6 +1966,7 @@ public class BuildCommandTest extends BaseCommandTest {
                 "--list-conflicted-classes",
                 "--dump-build-time",
                 "--export-openapi",
+                "--export-endpoints",
                 "--export-component-model",
                 "--disable-syntax-tree-caching"
         };
@@ -1999,6 +2000,7 @@ public class BuildCommandTest extends BaseCommandTest {
                 "--list-conflicted-classes",
                 "--dump-build-time",
                 "--export-openapi",
+                "--export-endpoints",
                 "--export-component-model",
                 "--disable-syntax-tree-caching",
         };
