@@ -65,7 +65,6 @@ import static io.ballerina.identifier.Utils.decodeIdentifier;
 import static org.ballerinalang.test.runtime.util.TesterinaConstants.BIN_DIR;
 import static org.ballerinalang.test.runtime.util.TesterinaConstants.BLANG_SRC_FILE_SUFFIX;
 import static org.ballerinalang.test.runtime.util.TesterinaConstants.DOT;
-import static org.ballerinalang.test.runtime.util.TesterinaConstants.PATH_SEPARATOR;
 import static org.jacoco.core.analysis.ICounter.EMPTY;
 import static org.jacoco.core.analysis.ICounter.FULLY_COVERED;
 import static org.jacoco.core.analysis.ICounter.NOT_COVERED;
@@ -461,11 +460,13 @@ public class CoverageReport {
     }
 
     private static String getExclusionClassFileName(ISourceFileCoverage sourceFileCoverage) {
-        String sourceOrg = sourceFileCoverage.getPackageName().split("/")[0];
-        String sourceModule = sourceFileCoverage.getPackageName().split("/")[1];
-        String sourceVersion = sourceFileCoverage.getPackageName().split("/")[2];
-        String sourceFile = sourceFileCoverage.getName().replace(".bal", "");
-        return sourceOrg + "." + sourceModule + "." + sourceVersion + "." + sourceFile;
+        String packageName = sourceFileCoverage.getPackageName();
+        String[] parts = packageName.split("/");
+        String sourceOrg = parts[0];
+        String sourceModule = parts[1];
+        String sourceVersion = parts[2];
+        String sourceFile = sourceFileCoverage.getName().replace(BLANG_SRC_FILE_SUFFIX, "");
+        return sourceOrg + DOT + sourceModule + DOT + sourceVersion + DOT + sourceFile;
     }
 
     private void filterGeneratedCoverage(Map<String, ModuleCoverage> moduleCoverageMap, Module originalModule) {
