@@ -351,9 +351,7 @@ public class CoverageReport {
                     // If file is a source bal file
                     if (sourceFileCoverage.getName().contains(BLANG_SRC_FILE_SUFFIX) &&
                             !sourceFileCoverage.getName().contains("tests/")) {
-                        String exclusionClassFileName = sourceFileCoverage.getPackageName() + PATH_SEPARATOR +
-                                sourceFileCoverage.getName().replace(BLANG_SRC_FILE_SUFFIX, "");
-                        exclusionClassFileName = exclusionClassFileName.replace(PATH_SEPARATOR, DOT);
+                        String exclusionClassFileName = getExclusionClassFileName(sourceFileCoverage);
                         if (exclusionClassList.contains(exclusionClassFileName)) {
                             continue;
                         }
@@ -460,6 +458,14 @@ public class CoverageReport {
                 }
             }
         }
+    }
+
+    private static String getExclusionClassFileName(ISourceFileCoverage sourceFileCoverage) {
+        String sourceOrg = sourceFileCoverage.getPackageName().split("/")[0];
+        String sourceModule = sourceFileCoverage.getPackageName().split("/")[1];
+        String sourceVersion = sourceFileCoverage.getPackageName().split("/")[2];
+        String sourceFile = sourceFileCoverage.getName().replace(".bal", "");
+        return sourceOrg + "." + sourceModule + "." + sourceVersion + "." + sourceFile;
     }
 
     private void filterGeneratedCoverage(Map<String, ModuleCoverage> moduleCoverageMap, Module originalModule) {
