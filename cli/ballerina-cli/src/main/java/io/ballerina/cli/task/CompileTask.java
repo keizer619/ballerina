@@ -119,9 +119,6 @@ public class CompileTask implements Task {
                         .ifPresent(err::println);
             }
             List<Diagnostic> diagnostics = new ArrayList<>(buildToolDiagnostics);
-            if (this.compileForBalBuild) {
-                addDiagnosticForProvidedPlatformLibs(project, diagnostics);
-            }
             long start = 0;
 
             if (project.currentPackage().compilationOptions().dumpGraph()

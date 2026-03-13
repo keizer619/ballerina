@@ -25,6 +25,7 @@ import io.ballerina.projects.PlatformLibraryScope;
 import io.ballerina.projects.Project;
 import io.ballerina.projects.ProjectException;
 import io.ballerina.projects.internal.model.Target;
+import io.ballerina.projects.util.ProjectConstants;
 import org.wso2.ballerinalang.util.Lists;
 
 import java.io.File;
@@ -50,6 +51,13 @@ import static org.wso2.ballerinalang.compiler.util.ProjectDirConstants.USER_DIR;
  * @since 2.0.0
  */
 public class RunExecutableTask implements Task {
+
+    private static final String KEY_SCOPE = "scope";
+    private static final String KEY_PATH = "path";
+    private static final String KEY_GROUP_ID = "groupId";
+    private static final String KEY_ARTIFACT_ID = "artifactId";
+    private static final String KEY_VERSION = "version";
+    private static final String PLATFORM_LIBS_DIR = "platform-libs";
 
     private final List<String> args;
     private final transient PrintStream out;
@@ -139,8 +147,8 @@ public class RunExecutableTask implements Task {
 
     private List<String> getProvidedPlatformDepPaths(Project project) {
         List<String> paths = new ArrayList<>();
-        String targetRepo = project.sourceRoot().resolve("target").resolve("platform-libs")
-                .toAbsolutePath().toString();
+        String targetRepo = project.sourceRoot().resolve(ProjectConstants.TARGET_DIR_NAME)
+                .resolve(PLATFORM_LIBS_DIR).toAbsolutePath().toString();
         Map<String, PackageManifest.Platform> platforms =
                 project.currentPackage().manifest().platforms();
         for (PackageManifest.Platform platform : platforms.values()) {
@@ -148,11 +156,11 @@ public class RunExecutableTask implements Task {
                 continue;
             }
             for (Map<String, Object> dependency : platform.dependencies()) {
-                String scopeValue = (String) dependency.get("scope");
+                String scopeValue = (String) dependency.get(KEY_SCOPE);
                 if (!PlatformLibraryScope.PROVIDED.getStringValue().equals(scopeValue)) {
                     continue;
                 }
-                String depFilePath = (String) dependency.get("path");
+                String depFilePath = (String) dependency.get(KEY_PATH);
                 if (depFilePath != null && !depFilePath.isEmpty()) {
                     // Path-based dependency: resolve relative paths against the project source root.
                     Path jarPath = Path.of(depFilePath);
@@ -162,9 +170,9 @@ public class RunExecutableTask implements Task {
                     paths.add(jarPath.toAbsolutePath().normalize().toString());
                 } else {
                     // Maven dependency (groupId + artifactId + version): construct path from target/platform-libs.
-                    String groupId = (String) dependency.get("groupId");
-                    String artifactId = (String) dependency.get("artifactId");
-                    String version = (String) dependency.get("version");
+                    String groupId = (String) dependency.get(KEY_GROUP_ID);
+                    String artifactId = (String) dependency.get(KEY_ARTIFACT_ID);
+                    String version = (String) dependency.get(KEY_VERSION);
                     if (groupId != null && artifactId != null && version != null) {
                         String jarPath = targetRepo + File.separator
                                 + groupId.replace('.', File.separatorChar)

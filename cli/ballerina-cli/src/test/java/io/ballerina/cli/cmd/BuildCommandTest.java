@@ -473,6 +473,103 @@ public class BuildCommandTest extends BaseCommandTest {
         }
     }
 
+    @Test(description = "Build a project with a Maven platform dependency: verify that with scope=provided " +
+            "the codec packages are excluded from the jar, and without scope=provided they are included")
+    public void testBuildProjectWithProvidedScope() throws IOException {
+        Path projectPath = this.testResources.resolve("projectWithProvidedScope1");
+        Path jarPath = projectPath.resolve(TARGET_DIR_NAME).resolve("bin").resolve("test2.jar");
+        Path ballerinaToml = projectPath.resolve(BALLERINA_TOML);
+        String originalToml = Files.readString(ballerinaToml);
+        System.setProperty(USER_DIR_PROPERTY, projectPath.toString());
+
+        // Step 1: Build WITH scope=provided — codec packages must NOT be bundled in the jar
+        BuildCommand buildCommand = new BuildCommand(projectPath, printStream, printStream, false);
+        new CommandLine(buildCommand).parseArgs();
+        try {
+            buildCommand.execute();
+        } catch (BLauncherException e) {
+            Assert.fail(readOutput(true) + "\n error message: " + e.getDetailedMessages().get(0));
+        }
+        String buildLog = readOutput(true);
+        Assert.assertTrue(buildLog.contains("Generating executable"),
+                "Build log should contain 'Generating executable' when scope=provided");
+        Assert.assertFalse(jarContainsCodecPackages(jarPath),
+                "Jar built with scope=provided must not contain org.apache.commons.codec packages");
+        deleteDirectory(projectPath.resolve(TARGET_DIR_NAME));
+
+        // Step 2: Build WITHOUT scope=provided — codec packages MUST be bundled in the jar
+        Files.writeString(ballerinaToml, originalToml.replace("scope=\"provided\"\n", ""));
+        try {
+            buildCommand = new BuildCommand(projectPath, printStream, printStream, false);
+            new CommandLine(buildCommand).parseArgs();
+            try {
+                buildCommand.execute();
+            } catch (BLauncherException e) {
+                Assert.fail(readOutput(true) + "\n error message: " + e.getDetailedMessages().get(0));
+            }
+            buildLog = readOutput(true);
+            Assert.assertTrue(buildLog.contains("Generating executable"),
+                    "Build log should contain 'Generating executable' when scope is not provided");
+            Assert.assertTrue(jarContainsCodecPackages(jarPath),
+                    "Jar built without scope=provided must contain org.apache.commons.codec packages");
+        } finally {
+            Files.writeString(ballerinaToml, originalToml);
+            deleteDirectory(projectPath.resolve(TARGET_DIR_NAME));
+        }
+    }
+
+    @Test(description = "Build a project with a Maven platform dependency: verify that with scope=provided " +
+            "the codec packages are excluded from the jar, and without scope=provided they are included")
+    public void testBuildProjectWithProvidedScope2() throws IOException {
+        Path projectPath = this.testResources.resolve("projectWithProvidedScope2");
+        Path jarPath = projectPath.resolve(TARGET_DIR_NAME).resolve("bin").resolve("test2.jar");
+        Path ballerinaToml = projectPath.resolve(BALLERINA_TOML);
+        String originalToml = Files.readString(ballerinaToml);
+        System.setProperty(USER_DIR_PROPERTY, projectPath.toString());
+
+        // Step 1: Build WITH scope=provided — codec packages must NOT be bundled in the jar
+        BuildCommand buildCommand = new BuildCommand(projectPath, printStream, printStream, false);
+        new CommandLine(buildCommand).parseArgs();
+        try {
+            buildCommand.execute();
+        } catch (BLauncherException e) {
+            Assert.fail(readOutput(true) + "\n error message: " + e.getDetailedMessages().get(0));
+        }
+        String buildLog = readOutput(true);
+        Assert.assertTrue(buildLog.contains("Generating executable"),
+                "Build log should contain 'Generating executable' when scope=provided");
+        Assert.assertFalse(jarContainsCodecPackages(jarPath),
+                "Jar built with scope=provided must not contain org.apache.commons.codec packages");
+        deleteDirectory(projectPath.resolve(TARGET_DIR_NAME));
+
+        // Step 2: Build WITHOUT scope=provided — codec packages MUST be bundled in the jar
+        Files.writeString(ballerinaToml, originalToml.replace("scope=\"provided\"\n", ""));
+        try {
+            buildCommand = new BuildCommand(projectPath, printStream, printStream, false);
+            new CommandLine(buildCommand).parseArgs();
+            try {
+                buildCommand.execute();
+            } catch (BLauncherException e) {
+                Assert.fail(readOutput(true) + "\n error message: " + e.getDetailedMessages().get(0));
+            }
+            buildLog = readOutput(true);
+            Assert.assertTrue(buildLog.contains("Generating executable"),
+                    "Build log should contain 'Generating executable' when scope is not provided");
+            Assert.assertTrue(jarContainsCodecPackages(jarPath),
+                    "Jar built without scope=provided must contain org.apache.commons.codec packages");
+        } finally {
+            Files.writeString(ballerinaToml, originalToml);
+            deleteDirectory(projectPath.resolve(TARGET_DIR_NAME));
+        }
+    }
+
+    private boolean jarContainsCodecPackages(Path jarPath) throws IOException {
+        try (JarFile jarFile = new JarFile(jarPath.toFile())) {
+            return jarFile.stream().anyMatch(entry ->
+                    entry.getName().startsWith("org/apache/commons/codec/"));
+        }
+    }
+
     @Test(description = "Build a valid ballerina project with provided scope platform jars in dependencies")
     public void testBuildProjectWithProvidedWarning() throws IOException {
         BCompileUtil.compileAndCacheBala(testResources.resolve("projectWithProvidedDependency")
