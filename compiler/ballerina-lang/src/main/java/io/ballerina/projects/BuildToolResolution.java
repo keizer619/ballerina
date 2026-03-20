@@ -162,7 +162,8 @@ public class BuildToolResolution {
                                     // Resolve conflicts by selecting the tool with the latest version
                                     SemanticVersion.VersionCompatibilityResult versionCompatibilityResult =
                                             tool1.version().compareTo(tool2.version());
-                                    if (versionCompatibilityResult.equals(SemanticVersion.VersionCompatibilityResult.EQUAL)) {
+                                    if (versionCompatibilityResult.equals(
+                                            SemanticVersion.VersionCompatibilityResult.EQUAL)) {
                                         return tool1;
                                     }
                                     return tool2;
