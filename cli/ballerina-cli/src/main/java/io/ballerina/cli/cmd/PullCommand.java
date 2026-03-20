@@ -18,8 +18,6 @@
 
 package io.ballerina.cli.cmd;
 
-import com.github.zafarkhaja.semver.UnexpectedCharacterException;
-import com.github.zafarkhaja.semver.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.ballerina.cli.BLauncherCmd;
@@ -158,7 +156,7 @@ public class PullCommand implements BLauncherCmd {
         String[] moduleInfo = resourceName.split("/");
         if (moduleInfo.length != 2) {
             CommandUtil.printError(errStream, "invalid package. Provide the package name with the organization.",
-                                   USAGE_TEXT, false);
+                    USAGE_TEXT, false);
             CommandUtil.exitError(this.exitWhenFinish);
             return;
         }
@@ -175,7 +173,7 @@ public class PullCommand implements BLauncherCmd {
             version = Names.EMPTY.getValue();
         } else {
             CommandUtil.printError(errStream, "invalid package. Provide the package name with the organization.",
-                                   USAGE_TEXT, false);
+                    USAGE_TEXT, false);
             CommandUtil.exitError(this.exitWhenFinish);
             return;
         }
@@ -183,13 +181,13 @@ public class PullCommand implements BLauncherCmd {
         // Validate package org, name and version
         if (!validateOrgName(orgName)) {
             CommandUtil.printError(errStream, "invalid organization. Provide the package name with the organization.",
-                                   USAGE_TEXT, false);
+                    USAGE_TEXT, false);
             CommandUtil.exitError(this.exitWhenFinish);
             return;
         }
         if (!validatePackageName(packageName)) {
             CommandUtil.printError(errStream, "invalid package name. Provide the package name with the organization.",
-                                   USAGE_TEXT, false);
+                    USAGE_TEXT, false);
             CommandUtil.exitError(this.exitWhenFinish);
             return;
         }
@@ -295,17 +293,17 @@ public class PullCommand implements BLauncherCmd {
             // or only compatible versions with the current ballerina version. If it returns all versions,
             // we need to filter the versions which are compatible with the current ballerina version.
             List<String> packageVersions = client.getPackageVersionsInCentralProxy(orgName,
-                    packageName, mavenPackageRootPath);
-            List<String> incompatibleVersions = getIncompatibleDistPkgVer(packageVersions, orgName,
-                    packageName, client, mavenPackageRootPath);
-            packageVersions.removeAll(incompatibleVersions);
+                    packageName, RepoUtils.getBallerinaShortVersion(), mavenPackageRootPath);
             List<PackageVersion> packageVersionsList = new ArrayList<>();
             packageVersions.stream().map(PackageVersion::from).forEach(packageVersionsList::add);
             PackageVersion latest = findLatest(packageVersionsList);
             version = latest.toString();
         }
         Path mavenBalaCachePath = mavenPackageRootPath.resolve(version);
-
+        if (Files.exists(mavenBalaCachePath)) {
+            outStream.println("Package already exists.\n");
+            return version;
+        }
         try {
             //TODO: Optimize this by using maven metadata to get platform
             Path tmpDownloadDirectory = Files.createTempDirectory("ballerina-" + System.nanoTime());
@@ -331,22 +329,6 @@ public class PullCommand implements BLauncherCmd {
     }
 
 
-    private List<String> getIncompatibleDistPkgVer(List<String> versions, String org, String name,
-                                                   MavenResolverClient client, Path mavenPackageRootPath)
-            throws MavenResolverClientException {
-        List<String> incompatibleVersions = new ArrayList<>();
-        if (!versions.isEmpty()) {
-            for (String ver : versions) {
-                String packBallerinaVer = RepoUtils.getBallerinaShortVersion();
-                String packageBallerinaVer = client.getBallerinaVersionForPackage(org, name, ver, mavenPackageRootPath);
-                if (!isCompatible(packageBallerinaVer, packBallerinaVer)) {
-                    incompatibleVersions.add(ver);
-                }
-            }
-        }
-        return incompatibleVersions;
-    }
-
     private PackageVersion findLatest(Collection<PackageVersion> packageVersions) {
         if (packageVersions.isEmpty()) {
             return null;
@@ -357,29 +339,6 @@ public class PullCommand implements BLauncherCmd {
             latestVersion = getLatest(latestVersion, pkgVersion);
         }
         return latestVersion;
-    }
-
-    private boolean isCompatible(String pkgBalVer, String distBalVer) {
-        if (pkgBalVer.equals(distBalVer) || pkgBalVer.startsWith("slbeta")) {
-            return true;
-        }
-        Version pkgSemVer;
-        Version distSemVer;
-        try {
-            pkgSemVer = Version.valueOf(pkgBalVer);
-            distSemVer = Version.valueOf(distBalVer);
-
-            if (pkgSemVer.getMajorVersion() == distSemVer.getMajorVersion()) {
-                if (pkgSemVer.getMinorVersion() == distSemVer.getMinorVersion()) {
-                    return true;
-                }
-                return !pkgSemVer.greaterThan(distSemVer);
-            }
-        } catch (UnexpectedCharacterException ignore) {
-            // SemVer incompatible versions will throw this exception.
-            // Catching this is mainly to handle slalpha versions
-        }
-        return false;
     }
 
     private String pullFromBCentral(Settings settings, String orgName, String packageName, String version,

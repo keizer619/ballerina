@@ -20,7 +20,6 @@ package org.ballerinalang.maven.bala.client.model;
 
 import com.google.gson.annotations.SerializedName;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -84,8 +83,7 @@ public class Package {
     @SerializedName(JSON_PROPERTY_CREATED_DATE) private Long createdDate;
 
     public static final String JSON_PROPERTY_MODULES = "modules";
-    @SerializedName(JSON_PROPERTY_MODULES) private List<java.lang.Module> modules = new ArrayList<>();
-
+    @SerializedName(JSON_PROPERTY_MODULES) private List<Module> modules = new ArrayList<>();
     public static final String JSON_PROPERTY_SUMMARY = "summary";
     @SerializedName(JSON_PROPERTY_SUMMARY) private String summary;
 
@@ -360,18 +358,18 @@ public class Package {
         this.createdDate = createdDate;
     }
 
-    public Package modules(List<java.lang.Module> modules) {
+    public Package modules(List<Module> modules) {
 
         this.modules = modules;
         return this;
     }
 
-    public Package addModulesItem(java.lang.Module modulesItem) {
+    public Package addModulesItem(Module modulesItem) {
         this.modules.add(modulesItem);
         return this;
     }
 
-    public List<java.lang.Module> getModules() {
+    public List<Module> getModules() {
         return modules;
     }
 
