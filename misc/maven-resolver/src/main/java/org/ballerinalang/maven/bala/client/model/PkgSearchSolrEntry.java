@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Data class representing a single package entry in Solr-based package search results from maven-metadata.xml.
  *
- * @since 2201.13.2
+ * @since 2201.13.3
  */
 public class PkgSearchSolrEntry {
     private long id;

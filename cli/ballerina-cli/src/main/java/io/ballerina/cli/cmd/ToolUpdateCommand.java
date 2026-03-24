@@ -300,13 +300,11 @@ public class ToolUpdateCommand implements BLauncherCmd {
      * @throws CentralClientException if reading tool metadata fails
      */
     private BalToolsManifest.Tool pullToolFromMavenProxy(String toolId, String org, String name, String version)
-            throws MavenResolverClientException, CentralClientException {
+            throws MavenResolverClientException {
         Settings settings = RepoUtils.readSettings();
         MavenResolverClient mavenClient = BalToolsUtil.initializeMavenClientWithProxyRepo(settings);
         BalToolsUtil.pullAndExtractToolFromMavenProxy(org, name, version, mavenClient);
-
-        // Read and return the tool metadata from the downloaded bala
-        return BalToolsUtil.pullToolPackageFromRemote(toolId, version);
+        return new BalToolsManifest.Tool(toolId, org, name, version, true, null);
     }
 
     private String getLatestVersion(List<String> versions, String currentVersionStr) {

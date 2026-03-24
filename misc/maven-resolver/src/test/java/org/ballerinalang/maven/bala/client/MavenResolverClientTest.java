@@ -36,11 +36,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Unit tests for {@link MavenResolverClient}.
  *
- * @since 2201.13.2
+ * @since 2201.13.3
  */
 public class MavenResolverClientTest {
 
@@ -56,21 +57,22 @@ public class MavenResolverClientTest {
         client = new MavenResolverClient();
         URL resourceUrl = getClass().getClassLoader().getResource("test-maven-repo");
         Assert.assertNotNull(resourceUrl, "test-maven-repo resource directory not found");
-        testRepoUrl = "file://" + Paths.get(resourceUrl.toURI()).toAbsolutePath();
+        testRepoUrl = Paths.get(resourceUrl.toURI()).toAbsolutePath().toUri().toString();
         client.addRepository("test-repo", testRepoUrl);
     }
 
     @AfterMethod
     public void teardown() throws IOException {
         if (localCacheDir != null && Files.exists(localCacheDir)) {
-            Files.walk(localCacheDir)
-                    .sorted(Comparator.reverseOrder())
-                    .forEach(p -> {
-                        try {
-                            Files.delete(p);
-                        } catch (IOException ignored) {
-                        }
-                    });
+            try (Stream<Path> walk = Files.walk(localCacheDir)) {
+                walk.sorted(Comparator.reverseOrder())
+                        .forEach(p -> {
+                            try {
+                                Files.delete(p);
+                            } catch (IOException ignored) {
+                            }
+                        });
+            }
         }
     }
 

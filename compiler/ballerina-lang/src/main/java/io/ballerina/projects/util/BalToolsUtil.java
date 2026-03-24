@@ -228,6 +228,8 @@ public class BalToolsUtil {
         MavenResolverClient mavenClient = new MavenResolverClient();
         mavenClient.addRepository(proxyCentralRepo.id(), proxyCentralRepo.url(),
                 proxyCentralRepo.username(), proxyCentralRepo.password());
+        mavenClient.setProxy(settings.getProxy().host(), settings.getProxy().port(),
+                settings.getProxy().username(), settings.getProxy().password());
         String ballerinaVersion = RepoUtils.getBallerinaVersion();
         List<String> compatibleVersions = mavenClient.getCompatibleToolVersions(
                 toolId, ballerinaVersion, localRepoPath);
@@ -236,8 +238,12 @@ public class BalToolsUtil {
                     "No compatible versions found for tool: " + toolId);
         }
 
-        // Return the first (latest) version
-        return compatibleVersions.getFirst();
+        return compatibleVersions.stream()
+                .map(SemanticVersion::from)
+                .max((v1, v2) -> v1.greaterThan(v2) ? 1 : v2.greaterThan(v1) ? -1 : 0)
+                .map(SemanticVersion::toString)
+                .orElseThrow(() -> new MavenResolverClientException(
+                        "No compatible versions found for tool: " + toolId));
     }
 
     /**
@@ -327,6 +333,8 @@ public class BalToolsUtil {
         MavenResolverClient client = new MavenResolverClient();
         client.addRepository(proxyCentralRepo.id(), proxyCentralRepo.url(),
                 proxyCentralRepo.username(), proxyCentralRepo.password());
+        client.setProxy(settings.getProxy().host(), settings.getProxy().port(),
+                settings.getProxy().username(), settings.getProxy().password());
         return client;
     }
 

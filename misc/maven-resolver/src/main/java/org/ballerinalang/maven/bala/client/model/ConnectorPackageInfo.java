@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Data class representing the package information nested within a connector search entry.
  *
- * @since 2201.13.2
+ * @since 2201.13.3
  */
 public class ConnectorPackageInfo {
     private String id;

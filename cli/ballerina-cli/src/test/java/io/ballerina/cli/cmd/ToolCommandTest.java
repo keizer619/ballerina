@@ -573,7 +573,7 @@ public class ToolCommandTest extends BaseCommandTest {
     public void testToolPullFromMvnProxyWithVersion() {
         Path repoPath = Path.of("src/test/resources/test-resources/maven-proxy/repositories/central-proxy");
         Path settingsTomlPath = Path.of("src/test/resources/test-resources/maven-proxy/SettingsFile.toml");
-        Path mockBallerinaHome = Path.of("build/ballerina-home");
+        Path mockBallerinaHome = tmpDir.resolve("ballerina-home-pull-with-version");
 
         ToolPullCommand toolPullCommand = new ToolPullCommand(printStream, printStream, false);
         new CommandLine(toolPullCommand).parseArgs("my-tool:1.0.0");
@@ -583,7 +583,7 @@ public class ToolCommandTest extends BaseCommandTest {
                      Mockito.CALLS_REAL_METHODS)) {
             repoUtils.when(RepoUtils::createAndGetHomeReposPath).thenReturn(mockBallerinaHome);
             repoUtils.when(RepoUtils::readSettings).thenReturn(readMockSettings(settingsTomlPath,
-                    repoPath.toAbsolutePath().toString().replace("\\", "/")));
+                    repoPath.toAbsolutePath().toUri().toString()));
             repoUtils.when(RepoUtils::getBallerinaShortVersion).thenReturn("2201.13.0");
             repoUtils.when(RepoUtils::getBallerinaVersion).thenReturn("2201.13.0");
             projUtils.when(ProjectUtils::createAndGetHomeReposPath).thenReturn(mockBallerinaHome);
@@ -598,7 +598,7 @@ public class ToolCommandTest extends BaseCommandTest {
     public void testToolPullFromMvnProxyWithoutVersion() {
         Path repoPath = Path.of("src/test/resources/test-resources/maven-proxy/repositories/central-proxy");
         Path settingsTomlPath = Path.of("src/test/resources/test-resources/maven-proxy/SettingsFile.toml");
-        Path mockBallerinaHome = Path.of("build/ballerina-home");
+        Path mockBallerinaHome = tmpDir.resolve("ballerina-home-pull-without-version");
 
         ToolPullCommand toolPullCommand = new ToolPullCommand(printStream, printStream, false);
         new CommandLine(toolPullCommand).parseArgs("my-tool");
@@ -608,7 +608,7 @@ public class ToolCommandTest extends BaseCommandTest {
                      Mockito.CALLS_REAL_METHODS)) {
             repoUtils.when(RepoUtils::createAndGetHomeReposPath).thenReturn(mockBallerinaHome);
             repoUtils.when(RepoUtils::readSettings).thenReturn(readMockSettings(settingsTomlPath,
-                    repoPath.toAbsolutePath().toString().replace("\\", "/")));
+                    repoPath.toAbsolutePath().toUri().toString()));
             repoUtils.when(RepoUtils::getBallerinaShortVersion).thenReturn("2201.13.0");
             repoUtils.when(RepoUtils::getBallerinaVersion).thenReturn("2201.13.0");
             projUtils.when(ProjectUtils::createAndGetHomeReposPath).thenReturn(mockBallerinaHome);
@@ -623,7 +623,7 @@ public class ToolCommandTest extends BaseCommandTest {
     public void testToolUpdateFromMvnProxy() {
         Path repoPath = Path.of("src/test/resources/test-resources/maven-proxy/repositories/central-proxy");
         Path settingsTomlPath = Path.of("src/test/resources/test-resources/maven-proxy/SettingsFile.toml");
-        Path mockBallerinaHome = Path.of("build/ballerina-home");
+        Path mockBallerinaHome = tmpDir.resolve("ballerina-home-update");
 
         ToolUpdateCommand toolUpdateCommand = new ToolUpdateCommand(printStream, printStream, false);
         new CommandLine(toolUpdateCommand).parseArgs("my-tool");
@@ -635,7 +635,7 @@ public class ToolCommandTest extends BaseCommandTest {
                      Mockito.CALLS_REAL_METHODS)) {
             repoUtils.when(RepoUtils::createAndGetHomeReposPath).thenReturn(mockBallerinaHome);
             repoUtils.when(RepoUtils::readSettings).thenReturn(readMockSettings(settingsTomlPath,
-                    repoPath.toAbsolutePath().toString().replace("\\", "/")));
+                    repoPath.toAbsolutePath().toUri().toString()));
             repoUtils.when(RepoUtils::getBallerinaShortVersion).thenReturn("2201.13.0");
             repoUtils.when(RepoUtils::getBallerinaVersion).thenReturn("2201.13.0");
             projUtils.when(ProjectUtils::createAndGetHomeReposPath).thenReturn(mockBallerinaHome);
@@ -651,13 +651,13 @@ public class ToolCommandTest extends BaseCommandTest {
     private static Settings readMockSettings(Path settingsFilePath, String repoPath) {
         try {
             String settingString = Files.readString(settingsFilePath);
-            settingString = settingString.replaceAll("REPO_PATH", repoPath);
+            settingString = settingString.replace("REPO_PATH", repoPath);
             TomlDocument settingsTomlDocument = TomlDocument
                     .from(String.valueOf(settingsFilePath.getFileName()), settingString);
             SettingsBuilder settingsBuilder = SettingsBuilder.from(settingsTomlDocument);
             return settingsBuilder.settings();
         } catch (IOException e) {
-            return Settings.from();
+            throw new RuntimeException("Failed to read mock settings from: " + settingsFilePath, e);
         }
     }
 }

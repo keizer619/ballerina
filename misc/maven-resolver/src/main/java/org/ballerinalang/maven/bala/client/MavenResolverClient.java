@@ -279,7 +279,9 @@ public class MavenResolverClient {
             return pkgMetadataCache.get(cacheKey).getVersions().stream()
                     .filter(v -> v.getVersion().equals(version))
                     .map(Version::getBallerinaVersion)
-                    .toList().getFirst();
+                    .findFirst()
+                    .orElseThrow(() -> new MavenResolverClientException(
+                            "No matching version found for: " + pkgName + ":" + version));
         } catch (MavenResolverClientException e) {
             throw new MavenResolverClientException("Failed to get package metadata: " + e.getMessage());
         }
@@ -307,7 +309,9 @@ public class MavenResolverClient {
             return pkgMetadataCache.get(cacheKey).getVersions().stream()
                     .filter(v -> v.getVersion().equals(version))
                     .map(Version::isDeprecated)
-                    .toList().getFirst();
+                    .findFirst()
+                    .orElseThrow(() -> new MavenResolverClientException(
+                            "No matching version found for: " + pkgName + ":" + version));
         } catch (MavenResolverClientException e) {
             throw new MavenResolverClientException("Failed to get package metadata: " + e.getMessage());
         }
@@ -1018,6 +1022,10 @@ public class MavenResolverClient {
     private Document parseXmlFile(File xmlFile)
             throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        factory.setExpandEntityReferences(false);
         DocumentBuilder builder = factory.newDocumentBuilder();
         return builder.parse(xmlFile);
     }

@@ -20,7 +20,7 @@ package org.ballerinalang.maven.bala.client.model;
 /**
  * Data class representing a single connector entry in connector search results from maven-metadata.xml.
  *
- * @since 2201.13.2
+ * @since 2201.13.3
  */
 public class ConnectorSearchEntry {
     private String id;

@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Data class representing package metadata parsed from a Maven maven-metadata.xml file.
  *
- * @since 2201.13.2
+ * @since 2201.13.3
  */
 public class PackageMavenMetadata {
     private String groupId;

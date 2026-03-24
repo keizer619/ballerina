@@ -365,10 +365,11 @@ public class BuildToolResolution {
                 BuildTool resolvedTool = resolveSingleToolViaMaven(
                         mavenClient, toolRequest, ballerinaVersion, localRepoPath);
                 if (resolvedTool != null) {
-                    resolvedTools.add(resolvedTool);
                     BalToolsUtil.pullAndExtractToolFromMavenProxy(
                             resolvedTool.org().value(), resolvedTool.name().value(),
                             resolvedTool.version().toString(), mavenClient);
+                    resolvedTools.add(resolvedTool);
+                    BuildToolsUtil.addToolToBalToolsToml(resolvedTool);
                 }
 
             } catch (MavenResolverClientException e) {
@@ -383,7 +384,8 @@ public class BuildToolResolution {
         return proxyCentralRepo.path().orElse(
                 ProjectUtils.createAndGetHomeReposPath()
                         .resolve(ProjectConstants.REPOSITORIES_DIR)
-                        .resolve(ProjectConstants.CENTRAL_REPOSITORY_CACHE_NAME));
+                        .resolve(ProjectConstants.CENTRAL_REPOSITORY_CACHE_NAME)
+                        .resolve(ProjectConstants.BALA_DIR_NAME));
     }
 
     private BuildTool resolveSingleToolViaMaven(MavenResolverClient mavenClient,

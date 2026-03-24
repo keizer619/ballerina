@@ -311,8 +311,8 @@ public class ToolPullCommand implements BLauncherCmd {
         MavenResolverClient mavenClient = BalToolsUtil.initializeMavenClientWithProxyRepo(settings);
         Path localRepoPath = RepoUtils.createAndGetHomeReposPath()
                 .resolve(ProjectConstants.REPOSITORIES_DIR)
-                .resolve(ProjectConstants.BALA_DIR_NAME)
-                .resolve(ProjectConstants.CENTRAL_REPOSITORY_CACHE_NAME);
+                .resolve(ProjectConstants.CENTRAL_REPOSITORY_CACHE_NAME)
+                .resolve(ProjectConstants.BALA_DIR_NAME);
 
         ToolMavenMetadata toolMetadata = mavenClient.getToolMetadata(toolId, RepoUtils.getBallerinaVersion(),
                 localRepoPath);
