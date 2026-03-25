@@ -104,9 +104,10 @@ public class MavenPackageRepository implements PackageRepository {
         String ballerinaShortVersion = RepoUtils.getBallerinaShortVersion();
         MavenResolverClient mvnClient = new MavenResolverClient();
         if (!repository.username().isEmpty() && !repository.password().isEmpty()) {
-            mvnClient.addRepository(repository.id(), repository.url(), repository.username(), repository.password());
+            mvnClient.addRepository(repository.proxyCentral() ? "" : repository.id(), repository.url(),
+                    repository.username(), repository.password());
         } else {
-            mvnClient.addRepository(repository.id(), repository.url());
+            mvnClient.addRepository(repository.proxyCentral() ? "" : repository.id(), repository.url());
         }
 
         Settings settings;

@@ -212,10 +212,10 @@ public class ToolSearchCommand implements BLauncherCmd {
     private static void initialiseMavenProxyClient(Repository centralProxyMavenRepository,
                                                    MavenResolverClient mavenClient, Settings settings) {
         if (!centralProxyMavenRepository.username().isEmpty() && !centralProxyMavenRepository.password().isEmpty()) {
-            mavenClient.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url(),
+            mavenClient.addRepository("", centralProxyMavenRepository.url(),
                     centralProxyMavenRepository.username(), centralProxyMavenRepository.password());
         } else {
-            mavenClient.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url());
+            mavenClient.addRepository("", centralProxyMavenRepository.url());
         }
         Proxy proxy = settings.getProxy();
         mavenClient.setProxy(proxy.host(), proxy.port(), proxy.username(), proxy.password());

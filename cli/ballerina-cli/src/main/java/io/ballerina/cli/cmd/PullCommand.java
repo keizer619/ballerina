@@ -266,10 +266,10 @@ public class PullCommand implements BLauncherCmd {
                                     String packageName, String version) throws MavenResolverClientException {
         MavenResolverClient client = new MavenResolverClient();
         if (!centralProxyMavenRepository.username().isEmpty() && !centralProxyMavenRepository.password().isEmpty()) {
-            client.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url(),
+            client.addRepository("", centralProxyMavenRepository.url(),
                     centralProxyMavenRepository.username(), centralProxyMavenRepository.password());
         } else {
-            client.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url());
+            client.addRepository("", centralProxyMavenRepository.url());
         }
         Proxy proxy = settings.getProxy();
         client.setProxy(proxy.host(), proxy.port(), proxy.username(), proxy.password());
@@ -277,8 +277,7 @@ public class PullCommand implements BLauncherCmd {
         Path mavenPackageRootPath = RepoUtils.createAndGetHomeReposPath()
                 .resolve(ProjectConstants.REPOSITORIES_DIR)
                 .resolve(ProjectConstants.CENTRAL_REPOSITORY_CACHE_NAME)
-                .resolve(ProjectConstants.BALA_DIR_NAME)
-                .resolve(orgName).resolve(packageName);
+                .resolve(ProjectConstants.BALA_DIR_NAME);
         if (version.isEmpty()) {
             //TODO :  Need to check this logic whether central client will return all versions
             // or only compatible versions with the current ballerina version. If it returns all versions,
@@ -290,7 +289,7 @@ public class PullCommand implements BLauncherCmd {
             PackageVersion latest = CommandUtil.findLatest(packageVersionsList);
             version = latest.toString();
         }
-        Path mavenBalaCachePath = mavenPackageRootPath.resolve(version);
+        Path mavenBalaCachePath = mavenPackageRootPath.resolve(orgName).resolve(packageName).resolve(version);
         if (Files.exists(mavenBalaCachePath)) {
             outStream.println("Package already exists.\n");
             return version;

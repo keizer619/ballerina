@@ -226,7 +226,7 @@ public class BalToolsUtil {
             throw new MavenResolverClientException("ProxyCentral repository not configured");
         }
         MavenResolverClient mavenClient = new MavenResolverClient();
-        mavenClient.addRepository(proxyCentralRepo.id(), proxyCentralRepo.url(),
+        mavenClient.addRepository("", proxyCentralRepo.url(),
                 proxyCentralRepo.username(), proxyCentralRepo.password());
         mavenClient.setProxy(settings.getProxy().host(), settings.getProxy().port(),
                 settings.getProxy().username(), settings.getProxy().password());
@@ -331,7 +331,7 @@ public class BalToolsUtil {
             throw new MavenResolverClientException("ProxyCentral repository not configured");
         }
         MavenResolverClient client = new MavenResolverClient();
-        client.addRepository(proxyCentralRepo.id(), proxyCentralRepo.url(),
+        client.addRepository("", proxyCentralRepo.url(),
                 proxyCentralRepo.username(), proxyCentralRepo.password());
         client.setProxy(settings.getProxy().host(), settings.getProxy().port(),
                 settings.getProxy().username(), settings.getProxy().password());

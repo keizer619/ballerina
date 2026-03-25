@@ -233,8 +233,9 @@ public class ToolUpdateCommand implements BLauncherCmd {
         // Check if proxyCentral repository is configured
         if (BalToolsUtil.hasProxyCentralRepository(settings)) {
             java.nio.file.Path localRepoPath = ProjectUtils.createAndGetHomeReposPath()
-                    .resolve(ProjectConstants.REPOSITORIES_DIR).resolve(ProjectConstants.BALA_DIR_NAME)
-                    .resolve(ProjectConstants.CENTRAL_REPOSITORY_CACHE_NAME);
+                    .resolve(ProjectConstants.REPOSITORIES_DIR)
+                    .resolve(ProjectConstants.CENTRAL_REPOSITORY_CACHE_NAME)
+                    .resolve(ProjectConstants.BALA_DIR_NAME);
             List<String> versions = getToolVersionsFromMavenProxy(tool, localRepoPath);
             return getLatestVersion(versions, tool.version());
         } else {

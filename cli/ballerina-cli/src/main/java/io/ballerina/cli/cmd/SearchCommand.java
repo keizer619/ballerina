@@ -236,10 +236,10 @@ public class SearchCommand implements BLauncherCmd {
     private static void intialiseMavenProxyClient(Repository centralProxyMavenRepository,
                                                   MavenResolverClient mavenResolverClient, Settings settings) {
         if (!centralProxyMavenRepository.username().isEmpty() && !centralProxyMavenRepository.password().isEmpty()) {
-            mavenResolverClient.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url(),
+            mavenResolverClient.addRepository("", centralProxyMavenRepository.url(),
                     centralProxyMavenRepository.username(), centralProxyMavenRepository.password());
         } else {
-            mavenResolverClient.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url());
+            mavenResolverClient.addRepository("", centralProxyMavenRepository.url());
         }
         Proxy proxy = settings.getProxy();
         mavenResolverClient.setProxy(proxy.host(), proxy.port(), proxy.username(), proxy.password());
