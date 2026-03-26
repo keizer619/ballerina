@@ -498,7 +498,7 @@ public class BuildCommandTest extends BaseCommandTest {
         deleteDirectory(projectPath.resolve(TARGET_DIR_NAME));
 
         // Step 2: Build WITHOUT scope=provided — codec packages MUST be bundled in the jar
-        Files.writeString(ballerinaToml, originalToml.replace("scope=\"provided\"\n", ""));
+        Files.writeString(ballerinaToml, originalToml.replace("scope=\"provided\"", ""));
         try {
             buildCommand = new BuildCommand(projectPath, printStream, printStream, false);
             new CommandLine(buildCommand).parseArgs();
@@ -543,7 +543,7 @@ public class BuildCommandTest extends BaseCommandTest {
         deleteDirectory(projectPath.resolve(TARGET_DIR_NAME));
 
         // Step 2: Build WITHOUT scope=provided — codec packages MUST be bundled in the jar
-        Files.writeString(ballerinaToml, originalToml.replace("scope=\"provided\"\n", ""));
+        Files.writeString(ballerinaToml, originalToml.replace("scope=\"provided\"", ""));
         try {
             buildCommand = new BuildCommand(projectPath, printStream, printStream, false);
             new CommandLine(buildCommand).parseArgs();

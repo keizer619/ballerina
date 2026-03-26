@@ -260,7 +260,7 @@ public class RunCommandTest extends BaseCommandTest {
         ProjectUtils.deleteDirectory(projectPath.resolve("target"));
 
         // Step 2: Run WITHOUT scope=provided — codec packages MUST be bundled in the jar.
-        Files.writeString(ballerinaToml, originalToml.replace("scope=\"provided\"\n", ""));
+        Files.writeString(ballerinaToml, originalToml.replace("scope=\"provided\"", ""));
         programOut = new ByteArrayOutputStream();
         System.setOut(new PrintStream(programOut));
         try {
@@ -306,7 +306,7 @@ public class RunCommandTest extends BaseCommandTest {
         ProjectUtils.deleteDirectory(projectPath.resolve("target"));
 
         // Step 2: Run WITHOUT scope=provided — codec packages MUST be bundled in the jar.
-        Files.writeString(ballerinaToml, originalToml.replace("scope=\"provided\"\n", ""));
+        Files.writeString(ballerinaToml, originalToml.replace("scope=\"provided\"", ""));
         programOut = new ByteArrayOutputStream();
         System.setOut(new PrintStream(programOut));
         try {
