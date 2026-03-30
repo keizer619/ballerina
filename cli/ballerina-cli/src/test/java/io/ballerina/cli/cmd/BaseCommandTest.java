@@ -83,7 +83,8 @@ public abstract class BaseCommandTest {
                 "buildToolResources/tools/bal-tools.toml");
         Path balToolsTomlDstPath = testDotBallerina.resolve(".config");
         Files.createDirectories(balToolsTomlDstPath);
-        Files.copy(balToolsTomlSrcPath, balToolsTomlDstPath.resolve("bal-tools.toml"));
+        Files.copy(balToolsTomlSrcPath, balToolsTomlDstPath.resolve("bal-tools.toml"),
+                StandardCopyOption.REPLACE_EXISTING);
 
 
         FileUtils.copyDirectory(testResourcesSrc.toFile(), testResources.toFile());

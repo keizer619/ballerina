@@ -43,11 +43,13 @@ import org.wso2.ballerinalang.util.RepoUtils;
 import picocli.CommandLine;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -402,6 +404,8 @@ public class ToolCommandTest extends BaseCommandTest {
         ToolSearchCommand toolSearchCommand = new ToolSearchCommand(printStream, printStream, false);
         new CommandLine(toolSearchCommand).parseArgs("mytool");
 
+        PrintStream originalOut = System.out;
+        System.setOut(printStream);
         try (MockedStatic<RepoUtils> repoUtils = Mockito.mockStatic(RepoUtils.class, Mockito.CALLS_REAL_METHODS);
              MockedConstruction<MavenResolverClient> ignored = Mockito.mockConstruction(MavenResolverClient.class,
                      (mock, ctx) -> Mockito.when(
@@ -411,6 +415,8 @@ public class ToolCommandTest extends BaseCommandTest {
             repoUtils.when(RepoUtils::getBallerinaShortVersion).thenReturn("2201.13.0");
             repoUtils.when(RepoUtils::createAndGetHomeReposPath).thenReturn(Path.of("build/ballerina-home"));
             toolSearchCommand.execute();
+        } finally {
+            System.setOut(originalOut);
         }
 
         String output = readOutput(true);
@@ -553,6 +559,8 @@ public class ToolCommandTest extends BaseCommandTest {
         new CommandLine(toolUpdateCommand).parseArgs("central_test_tool");
 
         try (MockedStatic<RepoUtils> repoUtils = Mockito.mockStatic(RepoUtils.class, Mockito.CALLS_REAL_METHODS);
+             MockedStatic<BalToolsUtil> balToolsUtil = Mockito.mockStatic(BalToolsUtil.class,
+                     Mockito.CALLS_REAL_METHODS);
              MockedConstruction<MavenResolverClient> ignored = Mockito.mockConstruction(MavenResolverClient.class,
                      (mock, ctx) -> Mockito.when(
                              mock.getCompatibleToolVersions(
@@ -561,6 +569,9 @@ public class ToolCommandTest extends BaseCommandTest {
             repoUtils.when(RepoUtils::readSettings).thenReturn(proxySettings);
             repoUtils.when(RepoUtils::getBallerinaVersion).thenReturn("2201.13.0");
             repoUtils.when(RepoUtils::createAndGetHomeReposPath).thenReturn(Path.of("build/ballerina-home"));
+            balToolsUtil.when(() -> BalToolsUtil.isCompatibleWithPlatform(
+                    Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+                    .thenReturn(true);
             toolUpdateCommand.execute();
         }
 
@@ -620,7 +631,11 @@ public class ToolCommandTest extends BaseCommandTest {
     }
 
     @Test(description = "Update a tool from older locked version via Maven proxy central")
-    public void testToolUpdateFromMvnProxy() {
+    public void testToolUpdateFromMvnProxy() throws IOException {
+        // Reset bal-tools.toml to initial state since prior pull tests may have written my-tool:1.0.0 into it
+        Path balToolsSrc = Path.of("src/test/resources/test-resources/buildToolResources/tools/bal-tools.toml");
+        Files.copy(balToolsSrc, BalToolsUtil.BAL_TOOLS_TOML_PATH, StandardCopyOption.REPLACE_EXISTING);
+
         Path repoPath = Path.of("src/test/resources/test-resources/maven-proxy/repositories/central-proxy");
         Path settingsTomlPath = Path.of("src/test/resources/test-resources/maven-proxy/SettingsFile.toml");
         Path mockBallerinaHome = tmpDir.resolve("ballerina-home-update");
@@ -641,6 +656,9 @@ public class ToolCommandTest extends BaseCommandTest {
             projUtils.when(ProjectUtils::createAndGetHomeReposPath).thenReturn(mockBallerinaHome);
             balToolsUtil.when(() -> BalToolsUtil.pullToolPackageFromRemote(Mockito.any(), Mockito.any()))
                     .thenReturn(new BalToolsManifest.Tool("my-tool", "luheerathan", "pact1", "1.0.0", true, null));
+            balToolsUtil.when(() -> BalToolsUtil.isCompatibleWithPlatform(
+                    Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+                    .thenReturn(true);
             toolUpdateCommand.execute();
         }
         Path updatedCacheDir = mockBallerinaHome.resolve("repositories").resolve("central.ballerina.io")

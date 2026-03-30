@@ -36,7 +36,6 @@ import org.ballerinalang.maven.bala.client.model.SymbolSearchMavenMetadata;
 import org.ballerinalang.maven.bala.client.model.ToolMavenMetadata;
 import org.ballerinalang.maven.bala.client.model.ToolSearchEntry;
 import org.ballerinalang.maven.bala.client.model.ToolSearchMavenMetadata;
-import org.ballerinalang.maven.bala.client.model.ToolVersion;
 import org.ballerinalang.maven.bala.client.model.Version;
 import org.codehaus.plexus.util.WriterFactory;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -80,6 +79,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -420,10 +420,7 @@ public class MavenResolverClient {
             metadata = fetchToolMetadata(toolId, localRepoPath, ballerinaVersion);
             toolMetadataCache.put(toolId, metadata);
         }
-        return metadata.getVersions().stream()
-                .filter(v -> isPkgDistVersionCompatible(ballerinaVersion, v.getBallerinaVersion()))
-                .map(ToolVersion::getVersion)
-                .toList();
+        return metadata.getVersions();
     }
 
     /**
@@ -439,7 +436,8 @@ public class MavenResolverClient {
             throws MavenResolverClientException {
         configureMetadataSession(localRepoPath);
         try {
-            File metadataFile = resolveMetadataFile("__packagesearch__", query, ballerinaVersion);
+            String encodedQuery = Base64.getEncoder().withoutPadding().encodeToString(query.getBytes());
+            File metadataFile = resolveMetadataFile("__packagesearch__", encodedQuery, ballerinaVersion);
             Document document = parseXmlFile(metadataFile);
             return parsePkgSearchMetadata(document);
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -461,7 +459,8 @@ public class MavenResolverClient {
             throws MavenResolverClientException {
         configureMetadataSession(localRepoPath);
         try {
-            File metadataFile = resolveMetadataFile("__packagesearchsolr__", query, ballerinaVersion);
+            String encodedQuery = Base64.getEncoder().withoutPadding().encodeToString(query.getBytes());
+            File metadataFile = resolveMetadataFile("__packagesearchsolr__", encodedQuery, ballerinaVersion);
             Document document = parseXmlFile(metadataFile);
             return parsePkgSearchSolrMetadata(document);
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -482,7 +481,8 @@ public class MavenResolverClient {
             throws MavenResolverClientException {
         configureMetadataSession(localRepoPath);
         try {
-            File metadataFile = resolveMetadataFile("__toolsearch__", query, ballerinaVersion);
+            String encodedQuery = Base64.getEncoder().withoutPadding().encodeToString(query.getBytes());
+            File metadataFile = resolveMetadataFile("__toolsearch__", encodedQuery, ballerinaVersion);
             Document document = parseXmlFile(metadataFile);
             return parseToolSearchMetadata(document);
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -503,7 +503,8 @@ public class MavenResolverClient {
             throws MavenResolverClientException {
         configureMetadataSession(localRepoPath);
         try {
-            File metadataFile = resolveMetadataFile("__symbolsearch__", query, ballerinaVersion);
+            String encodedQuery = Base64.getEncoder().withoutPadding().encodeToString(query.getBytes());
+            File metadataFile = resolveMetadataFile("__symbolsearch__", encodedQuery, ballerinaVersion);
             Document document = parseXmlFile(metadataFile);
             return parseSymbolSearchMetadata(document);
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -525,7 +526,8 @@ public class MavenResolverClient {
             throws MavenResolverClientException {
         configureMetadataSession(localRepoPath);
         try {
-            File metadataFile = resolveMetadataFile("__connectorsearch__", query, ballerinaVersion);
+            String encodedQuery = Base64.getEncoder().withoutPadding().encodeToString(query.getBytes());
+            File metadataFile = resolveMetadataFile("__connectorsearch__", encodedQuery, ballerinaVersion);
             Document document = parseXmlFile(metadataFile);
             return parseConnectorSearchMetadata(document);
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -958,17 +960,17 @@ public class MavenResolverClient {
         metadata.setOrg(getTagValue(document, "org"));
         metadata.setName(getTagValue(document, "package"));
 
-        NodeList versionNodes = document.getElementsByTagName("version");
-        List<ToolVersion> versions = new ArrayList<>();
-        for (int i = 0; i < versionNodes.getLength(); i++) {
-            Node node = versionNodes.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element versionElement = (Element) node;
-                String version = getElementTextContent(versionElement, "number");
-                String platform = getElementTextContent(versionElement, "platform");
-                String ballerinaVersion = getElementTextContent(versionElement, "ballerinaVersion");
-                if (!version.isEmpty()) {
-                    versions.add(new ToolVersion(version, platform, ballerinaVersion));
+        List<String> versions = new ArrayList<>();
+        NodeList versionsWrapper = document.getElementsByTagName("versions");
+        if (versionsWrapper.getLength() > 0) {
+            NodeList versionNodes = ((Element) versionsWrapper.item(0)).getElementsByTagName("version");
+            for (int i = 0; i < versionNodes.getLength(); i++) {
+                Node node = versionNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    String version = node.getTextContent().trim();
+                    if (!version.isEmpty()) {
+                        versions.add(version);
+                    }
                 }
             }
         }

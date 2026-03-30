@@ -39,7 +39,6 @@ import org.ballerinalang.central.client.model.ToolResolutionCentralResponse;
 import org.ballerinalang.maven.bala.client.MavenResolverClient;
 import org.ballerinalang.maven.bala.client.MavenResolverClientException;
 import org.ballerinalang.maven.bala.client.model.ToolMavenMetadata;
-import org.ballerinalang.maven.bala.client.model.ToolVersion;
 import org.wso2.ballerinalang.util.RepoUtils;
 
 import java.nio.file.Path;
@@ -397,10 +396,7 @@ public class BuildToolResolution {
                 packageContext.packageManifest().tools());
         ToolMavenMetadata toolMetadata =
                 mavenClient.getToolMetadata(toolId, ballerinaVersion, localRepoPath);
-        List<String> compatibleToolVersions = toolMetadata.getVersions().stream()
-                .filter(v -> isCompatibleWithToolDistVersion(ballerinaVersion, v.getBallerinaVersion()))
-                .map(ToolVersion::getVersion)
-                .toList();
+        List<String> compatibleToolVersions = toolMetadata.getVersions();
         if (compatibleToolVersions.isEmpty()) {
             return null;
         }

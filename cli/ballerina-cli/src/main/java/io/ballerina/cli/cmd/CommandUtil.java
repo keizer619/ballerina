@@ -53,13 +53,13 @@ import io.ballerina.projects.repos.FileSystemCache;
 import io.ballerina.projects.util.FileUtils;
 import io.ballerina.projects.util.ProjectConstants;
 import io.ballerina.projects.util.ProjectUtils;
-import org.ballerinalang.maven.bala.client.MavenResolverClient;
-import org.ballerinalang.maven.bala.client.MavenResolverClientException;
 import io.ballerina.tools.diagnostics.Diagnostic;
 import org.ballerinalang.central.client.CentralAPIClient;
 import org.ballerinalang.central.client.CentralClientConstants;
 import org.ballerinalang.central.client.exceptions.CentralClientException;
 import org.ballerinalang.central.client.exceptions.PackageAlreadyExistsException;
+import org.ballerinalang.maven.bala.client.MavenResolverClient;
+import org.ballerinalang.maven.bala.client.MavenResolverClientException;
 import org.wso2.ballerinalang.util.RepoUtils;
 
 import java.io.BufferedReader;

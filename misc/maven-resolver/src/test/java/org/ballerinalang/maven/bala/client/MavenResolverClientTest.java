@@ -291,8 +291,6 @@ public class MavenResolverClientTest {
 
     @Test
     public void testGetCompatibleToolVersions() throws MavenResolverClientException {
-        // my-tool has versions with ballerinaVersion 2201.13.0 and 2201.10.0.
-        // Both are compatible with current 2201.13.2 (13 >= 13 and 13 >= 10).
         List<String> versions = client.getCompatibleToolVersions(
                 "my-tool", BALLERINA_VERSION, localCacheDir);
 
@@ -303,14 +301,14 @@ public class MavenResolverClientTest {
     }
 
     @Test
-    public void testGetCompatibleToolVersions_noMatch() throws MavenResolverClientException {
-        // future-tool has versions requiring 2201.14.0 and 2201.15.0.
-        // With current 2201.13.2: neither is compatible (13 < 14 and 13 < 15).
+    public void testGetCompatibleToolVersions_futureTool() throws MavenResolverClientException {
         List<String> versions = client.getCompatibleToolVersions(
                 "future-tool", BALLERINA_VERSION, localCacheDir);
 
         Assert.assertNotNull(versions);
-        Assert.assertTrue(versions.isEmpty());
+        Assert.assertEquals(versions.size(), 2);
+        Assert.assertTrue(versions.contains("1.0.0"));
+        Assert.assertTrue(versions.contains("2.0.0"));
     }
 
     @Test(expectedExceptions = MavenResolverClientException.class)

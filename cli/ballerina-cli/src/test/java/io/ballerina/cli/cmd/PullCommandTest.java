@@ -224,7 +224,7 @@ public class PullCommandTest extends BaseCommandTest {
         try (MockedStatic<RepoUtils> repoUtils = Mockito.mockStatic(RepoUtils.class, Mockito.CALLS_REAL_METHODS)) {
             repoUtils.when(RepoUtils::createAndGetHomeReposPath).thenReturn(mockBallerinaHome);
             repoUtils.when(RepoUtils::readSettings).thenReturn(readMockSettings(settingsTomlPath,
-                    repoPath.toAbsolutePath().toString().replace("\\", "/")));
+                    repoPath.toAbsolutePath().toUri().toString()));
             repoUtils.when(RepoUtils::getBallerinaShortVersion).thenReturn("2201.13.0");
             pullCommand.execute();
         }
@@ -244,7 +244,7 @@ public class PullCommandTest extends BaseCommandTest {
         try (MockedStatic<RepoUtils> repoUtils = Mockito.mockStatic(RepoUtils.class, Mockito.CALLS_REAL_METHODS)) {
             repoUtils.when(RepoUtils::createAndGetHomeReposPath).thenReturn(mockBallerinaHome);
             repoUtils.when(RepoUtils::readSettings).thenReturn(readMockSettings(settingsTomlPath,
-                    repoPath.toAbsolutePath().toString().replace("\\", "/")));
+                    repoPath.toAbsolutePath().toUri().toString()));
             repoUtils.when(RepoUtils::getBallerinaShortVersion).thenReturn("2201.13.0");
             pullCommand.execute();
         }

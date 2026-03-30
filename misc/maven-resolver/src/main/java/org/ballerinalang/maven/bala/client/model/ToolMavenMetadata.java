@@ -30,7 +30,7 @@ public class ToolMavenMetadata {
     private String artifactId;
     private String org;
     private String name;
-    private List<ToolVersion> versions;
+    private List<String> versions;
 
     public ToolMavenMetadata() {
         this.versions = new ArrayList<>();
@@ -68,11 +68,11 @@ public class ToolMavenMetadata {
         this.name = name;
     }
 
-    public List<ToolVersion> getVersions() {
+    public List<String> getVersions() {
         return versions;
     }
 
-    public void setVersions(List<ToolVersion> versions) {
+    public void setVersions(List<String> versions) {
         this.versions = versions;
     }
 

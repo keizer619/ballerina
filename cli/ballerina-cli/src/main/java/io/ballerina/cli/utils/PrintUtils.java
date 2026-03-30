@@ -23,7 +23,6 @@ import io.ballerina.projects.util.ProjectConstants;
 import org.ballerinalang.central.client.model.Package;
 import org.ballerinalang.central.client.model.Tool;
 
-import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -36,8 +35,6 @@ import java.util.List;
  * @since 2.0.0
  */
 public final class PrintUtils {
-
-    private static final PrintStream outStream = System.out;
 
     private PrintUtils() {
     }
@@ -78,20 +75,20 @@ public final class PrintUtils {
 
             printInCLI("|" + tool.id(), toolIdColWidth);
             printInCLI(version, versionColWidth);
-            outStream.println();
+            System.out.println();
         }
-        outStream.println();
-        outStream.println(tools.size() + (all ? "" : " active") + " tool versions found.");
+        System.out.println();
+        System.out.println(tools.size() + (all ? "" : " active") + " tool versions found.");
     }
 
     private static void printListLocalTableHeader(int toolIdColWidth, int versionColWidth) {
         printInCLI("|TOOL ID", toolIdColWidth);
         printInCLI("VERSION", versionColWidth);
-        outStream.println();
+        System.out.println();
 
         printCharacter("|-", toolIdColWidth, "-", true);
         printCharacter("-", versionColWidth, "-", true);
-        outStream.println();
+        System.out.println();
     }
 
     /**
@@ -129,13 +126,13 @@ public final class PrintUtils {
         printPackageSearchTableHeader(columnNames, columnWidths);
 
         for (Package aPackage : packages) {
-            outStream.print("|");
+            System.out.print("|");
             printPackage(aPackage, dateColWidth, versionColWidth, authorsColWidth, nameColWidth - 1, descColWidth,
                          minDescColWidth);
-            outStream.println();
+            System.out.println();
         }
-        outStream.println();
-        outStream.println(packages.size() + " packages found");
+        System.out.println();
+        System.out.println(packages.size() + " packages found");
     }
 
     /**
@@ -178,10 +175,10 @@ public final class PrintUtils {
             printInCLI("|" + tool.getBalToolId(), idColWidth);
             printTool(tool, dateColWidth, versionColWidth, authorsColWidth, nameColWidth, descColWidth,
                     minDescColWidth);
-            outStream.println();
+            System.out.println();
         }
-        outStream.println();
-        outStream.println(tools.size() + " tools found.");
+        System.out.println();
+        System.out.println(tools.size() + " tools found.");
     }
 
     /**
@@ -272,10 +269,10 @@ public final class PrintUtils {
      * Print the ballerina central tile.
      */
     private static void printBallerinaCentralTitle() {
-        outStream.println();
-        outStream.println("Ballerina Central");
-        outStream.println("=================");
-        outStream.println();
+        System.out.println();
+        System.out.println("Ballerina Central");
+        System.out.println("=================");
+        System.out.println();
     }
 
     /**
@@ -289,7 +286,7 @@ public final class PrintUtils {
         if (lengthOfElement > charactersAllowed || lengthOfElement == charactersAllowed) {
             int margin = 3;
             String trimmedElement = element.substring(0, charactersAllowed - margin) + "...";
-            outStream.print(trimmedElement + " |");
+            System.out.print(trimmedElement + " |");
         } else {
             printCharacter(element, charactersAllowed, " ", false);
         }
@@ -312,9 +309,9 @@ public final class PrintUtils {
             i = i + 1;
         }
         if (isDashElement) {
-            outStream.print(print + "-|");
+            System.out.print(print + "-|");
         } else {
-            outStream.print(print + " |");
+            System.out.print(print + " |");
         }
     }
 
@@ -352,7 +349,7 @@ public final class PrintUtils {
         for (int i = 1; i < columnNames.length; i++) {
             printInCLI(columnNames[i], columnWidths[i]);
         }
-        outStream.println();
+        System.out.println();
     }
 
     /**
@@ -365,7 +362,7 @@ public final class PrintUtils {
         for (int i = 1; i < columnWidths.length; i++) {
             printCharacter("-", columnWidths[i], "-", true);
         }
-        outStream.println();
+        System.out.println();
     }
 
     private static String getSummary(Package aPackage) {

@@ -2,11 +2,10 @@
 <metadata>
   <groupId>v2201-13-0.__tools__</groupId>
   <artifactId>my-tool</artifactId>
+  <versions>
+    <version>1.0.0</version>
+    <version>0.1.0</version>
+  </versions>
   <org>luheerathan</org>
   <package>pact1</package>
-  <version>
-    <number>1.0.0</number>
-    <platform>any</platform>
-    <ballerinaVersion>2201.13.0</ballerinaVersion>
-  </version>
 </metadata>
