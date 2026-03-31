@@ -27,6 +27,7 @@ import io.ballerina.projects.SemanticVersion;
 import io.ballerina.projects.Settings;
 import io.ballerina.projects.internal.BalToolsManifestBuilder;
 import io.ballerina.projects.util.CustomURLClassLoader;
+import io.ballerina.projects.util.ProjectConstants;
 import io.ballerina.runtime.internal.utils.RuntimeUtils;
 import org.ballerinalang.central.client.exceptions.CentralClientException;
 import org.ballerinalang.central.client.model.ToolResolutionCentralRequest;
@@ -217,7 +218,9 @@ public final class Main {
             String latestVersion;
             if (hasProxyCentralRepository(settings)) {
                 Path localRepoPath = io.ballerina.projects.util.ProjectUtils.createAndGetHomeReposPath()
-                        .resolve(io.ballerina.projects.util.ProjectConstants.REPOSITORIES_DIR);
+                        .resolve(io.ballerina.projects.util.ProjectConstants.REPOSITORIES_DIR)
+                        .resolve(ProjectConstants.CENTRAL_REPOSITORY_CACHE_NAME)
+                        .resolve(ProjectConstants.BALA_DIR_NAME);
                 latestVersion = getLatestToolVersionFromCentralProxy(commandName, localRepoPath);
             } else {
                 ToolResolutionCentralRequest toolResolutionRequest = new ToolResolutionCentralRequest();

@@ -287,6 +287,9 @@ public class PullCommand implements BLauncherCmd {
             List<PackageVersion> packageVersionsList = new ArrayList<>();
             packageVersions.stream().map(PackageVersion::from).forEach(packageVersionsList::add);
             PackageVersion latest = CommandUtil.findLatest(packageVersionsList);
+            if (latest == null) {
+                throw new MavenResolverClientException("Package not found.\n");
+            }
             version = latest.toString();
         }
         Path mavenBalaCachePath = mavenPackageRootPath.resolve(orgName).resolve(packageName).resolve(version);
@@ -382,7 +385,7 @@ public class PullCommand implements BLauncherCmd {
             PackageLockingMode packageLockingMode;
             if (sticky) {
                 packageLockingMode = PackageLockingMode.HARD;
-            }  else {
+            } else {
                 packageLockingMode = Objects.requireNonNullElse(lockingMode, PackageLockingMode.SOFT);
             }
             BuildOptions buildOptions = BuildOptions.builder().setLockingMode(packageLockingMode).setOffline(offline)

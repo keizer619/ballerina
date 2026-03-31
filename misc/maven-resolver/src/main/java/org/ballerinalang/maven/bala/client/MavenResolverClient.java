@@ -75,6 +75,7 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -436,7 +437,8 @@ public class MavenResolverClient {
             throws MavenResolverClientException {
         configureMetadataSession(localRepoPath);
         try {
-            String encodedQuery = Base64.getEncoder().withoutPadding().encodeToString(query.getBytes());
+            String encodedQuery = Base64.getEncoder().withoutPadding()
+                    .encodeToString(query.getBytes(StandardCharsets.UTF_8));
             File metadataFile = resolveMetadataFile("__packagesearch__", encodedQuery, ballerinaVersion);
             Document document = parseXmlFile(metadataFile);
             return parsePkgSearchMetadata(document);
@@ -459,7 +461,8 @@ public class MavenResolverClient {
             throws MavenResolverClientException {
         configureMetadataSession(localRepoPath);
         try {
-            String encodedQuery = Base64.getEncoder().withoutPadding().encodeToString(query.getBytes());
+            String encodedQuery = Base64.getEncoder().withoutPadding()
+                    .encodeToString(query.getBytes(StandardCharsets.UTF_8));
             File metadataFile = resolveMetadataFile("__packagesearchsolr__", encodedQuery, ballerinaVersion);
             Document document = parseXmlFile(metadataFile);
             return parsePkgSearchSolrMetadata(document);
@@ -481,7 +484,8 @@ public class MavenResolverClient {
             throws MavenResolverClientException {
         configureMetadataSession(localRepoPath);
         try {
-            String encodedQuery = Base64.getEncoder().withoutPadding().encodeToString(query.getBytes());
+            String encodedQuery = Base64.getEncoder().withoutPadding()
+                    .encodeToString(query.getBytes(StandardCharsets.UTF_8));
             File metadataFile = resolveMetadataFile("__toolsearch__", encodedQuery, ballerinaVersion);
             Document document = parseXmlFile(metadataFile);
             return parseToolSearchMetadata(document);
@@ -503,7 +507,8 @@ public class MavenResolverClient {
             throws MavenResolverClientException {
         configureMetadataSession(localRepoPath);
         try {
-            String encodedQuery = Base64.getEncoder().withoutPadding().encodeToString(query.getBytes());
+            String encodedQuery = Base64.getEncoder().withoutPadding()
+                    .encodeToString(query.getBytes(StandardCharsets.UTF_8));
             File metadataFile = resolveMetadataFile("__symbolsearch__", encodedQuery, ballerinaVersion);
             Document document = parseXmlFile(metadataFile);
             return parseSymbolSearchMetadata(document);
@@ -526,7 +531,8 @@ public class MavenResolverClient {
             throws MavenResolverClientException {
         configureMetadataSession(localRepoPath);
         try {
-            String encodedQuery = Base64.getEncoder().withoutPadding().encodeToString(query.getBytes());
+            String encodedQuery = Base64.getEncoder().withoutPadding()
+                    .encodeToString(query.getBytes(StandardCharsets.UTF_8));
             File metadataFile = resolveMetadataFile("__connectorsearch__", encodedQuery, ballerinaVersion);
             Document document = parseXmlFile(metadataFile);
             return parseConnectorSearchMetadata(document);
