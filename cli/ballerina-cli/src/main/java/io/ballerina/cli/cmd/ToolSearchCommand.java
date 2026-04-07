@@ -202,7 +202,7 @@ public class ToolSearchCommand implements BLauncherCmd {
             toolList.add(tool);
         }
         if (!toolList.isEmpty()) {
-            printTools(toolList, RepoUtils.getTerminalWidth());
+            printTools(toolList, RepoUtils.getTerminalWidth(), this.outStream);
         } else {
             outStream.println("no tools found.");
         }

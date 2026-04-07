@@ -224,7 +224,7 @@ public class SearchCommand implements BLauncherCmd {
             packageList.add(centralPkg);
         }
         if (!packageList.isEmpty()) {
-            printPackages(packageList, RepoUtils.getTerminalWidth());
+            printPackages(packageList, RepoUtils.getTerminalWidth(), this.outStream);
             foundSearch = true;
         }
         if (!foundSearch) {

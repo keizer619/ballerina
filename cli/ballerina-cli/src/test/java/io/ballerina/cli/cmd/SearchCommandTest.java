@@ -32,7 +32,6 @@ import org.wso2.ballerinalang.util.RepoUtils;
 import picocli.CommandLine;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,8 +106,6 @@ public class SearchCommandTest extends BaseCommandTest {
         SearchCommand searchCommand = new SearchCommand(printStream, printStream, false);
         new CommandLine(searchCommand).parseArgs("mypkg");
 
-        PrintStream originalOut = System.out;
-        System.setOut(printStream);
         try (MockedStatic<RepoUtils> repoUtils = Mockito.mockStatic(RepoUtils.class, Mockito.CALLS_REAL_METHODS);
              MockedConstruction<MavenResolverClient> ignored = Mockito.mockConstruction(MavenResolverClient.class,
                      (mock, ctx) -> Mockito.when(
@@ -118,8 +115,6 @@ public class SearchCommandTest extends BaseCommandTest {
             repoUtils.when(RepoUtils::getBallerinaShortVersion).thenReturn("2201.13.0");
             repoUtils.when(RepoUtils::createAndGetHomeReposPath).thenReturn(Path.of("build/ballerina-home"));
             searchCommand.execute();
-        } finally {
-            System.setOut(originalOut);
         }
 
         String output = readOutput(true);

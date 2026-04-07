@@ -43,7 +43,6 @@ import org.wso2.ballerinalang.util.RepoUtils;
 import picocli.CommandLine;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -404,8 +403,6 @@ public class ToolCommandTest extends BaseCommandTest {
         ToolSearchCommand toolSearchCommand = new ToolSearchCommand(printStream, printStream, false);
         new CommandLine(toolSearchCommand).parseArgs("mytool");
 
-        PrintStream originalOut = System.out;
-        System.setOut(printStream);
         try (MockedStatic<RepoUtils> repoUtils = Mockito.mockStatic(RepoUtils.class, Mockito.CALLS_REAL_METHODS);
              MockedConstruction<MavenResolverClient> ignored = Mockito.mockConstruction(MavenResolverClient.class,
                      (mock, ctx) -> Mockito.when(
@@ -415,8 +412,6 @@ public class ToolCommandTest extends BaseCommandTest {
             repoUtils.when(RepoUtils::getBallerinaShortVersion).thenReturn("2201.13.0");
             repoUtils.when(RepoUtils::createAndGetHomeReposPath).thenReturn(Path.of("build/ballerina-home"));
             toolSearchCommand.execute();
-        } finally {
-            System.setOut(originalOut);
         }
 
         String output = readOutput(true);
