@@ -18,10 +18,6 @@
 
 package io.ballerina.cli.cmd;
 
-import com.github.zafarkhaja.semver.UnexpectedCharacterException;
-import com.github.zafarkhaja.semver.Version;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import io.ballerina.cli.BLauncherCmd;
 import io.ballerina.projects.BuildOptions;
 import io.ballerina.projects.JvmTarget;
@@ -34,7 +30,6 @@ import io.ballerina.projects.internal.model.Proxy;
 import io.ballerina.projects.internal.model.Repository;
 import io.ballerina.projects.util.ProjectConstants;
 import io.ballerina.projects.util.ProjectUtils;
-import org.apache.commons.io.FileUtils;
 import org.ballerinalang.central.client.CentralAPIClient;
 import org.ballerinalang.central.client.CentralClientConstants;
 import org.ballerinalang.central.client.exceptions.CentralClientException;
@@ -45,15 +40,12 @@ import org.wso2.ballerinalang.compiler.util.Names;
 import org.wso2.ballerinalang.util.RepoUtils;
 import picocli.CommandLine;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -61,11 +53,8 @@ import java.util.stream.Collectors;
 import static io.ballerina.cli.cmd.Constants.PULL_COMMAND;
 import static io.ballerina.cli.launcher.LauncherUtils.createLauncherException;
 import static io.ballerina.projects.internal.SettingsBuilder.MAVEN;
-import static io.ballerina.projects.util.ProjectConstants.BALA_EXTENSION;
 import static io.ballerina.projects.util.ProjectConstants.LOCAL_REPOSITORY_NAME;
-import static io.ballerina.projects.util.ProjectConstants.PLATFORM;
 import static io.ballerina.projects.util.ProjectUtils.getAccessTokenOfCLI;
-import static io.ballerina.projects.util.ProjectUtils.getLatest;
 import static io.ballerina.projects.util.ProjectUtils.initializeProxy;
 import static io.ballerina.projects.util.ProjectUtils.validateOrgName;
 import static io.ballerina.projects.util.ProjectUtils.validatePackageName;
@@ -158,7 +147,7 @@ public class PullCommand implements BLauncherCmd {
         String[] moduleInfo = resourceName.split("/");
         if (moduleInfo.length != 2) {
             CommandUtil.printError(errStream, "invalid package. Provide the package name with the organization.",
-                                   USAGE_TEXT, false);
+                    USAGE_TEXT, false);
             CommandUtil.exitError(this.exitWhenFinish);
             return;
         }
@@ -175,7 +164,7 @@ public class PullCommand implements BLauncherCmd {
             version = Names.EMPTY.getValue();
         } else {
             CommandUtil.printError(errStream, "invalid package. Provide the package name with the organization.",
-                                   USAGE_TEXT, false);
+                    USAGE_TEXT, false);
             CommandUtil.exitError(this.exitWhenFinish);
             return;
         }
@@ -183,13 +172,13 @@ public class PullCommand implements BLauncherCmd {
         // Validate package org, name and version
         if (!validateOrgName(orgName)) {
             CommandUtil.printError(errStream, "invalid organization. Provide the package name with the organization.",
-                                   USAGE_TEXT, false);
+                    USAGE_TEXT, false);
             CommandUtil.exitError(this.exitWhenFinish);
             return;
         }
         if (!validatePackageName(packageName)) {
             CommandUtil.printError(errStream, "invalid package name. Provide the package name with the organization.",
-                                   USAGE_TEXT, false);
+                    USAGE_TEXT, false);
             CommandUtil.exitError(this.exitWhenFinish);
             return;
         }
@@ -277,10 +266,10 @@ public class PullCommand implements BLauncherCmd {
                                     String packageName, String version) throws MavenResolverClientException {
         MavenResolverClient client = new MavenResolverClient();
         if (!centralProxyMavenRepository.username().isEmpty() && !centralProxyMavenRepository.password().isEmpty()) {
-            client.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url(),
+            client.addRepository("", centralProxyMavenRepository.url(),
                     centralProxyMavenRepository.username(), centralProxyMavenRepository.password());
         } else {
-            client.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url());
+            client.addRepository("", centralProxyMavenRepository.url());
         }
         Proxy proxy = settings.getProxy();
         client.setProxy(proxy.host(), proxy.port(), proxy.username(), proxy.password());
@@ -288,41 +277,29 @@ public class PullCommand implements BLauncherCmd {
         Path mavenPackageRootPath = RepoUtils.createAndGetHomeReposPath()
                 .resolve(ProjectConstants.REPOSITORIES_DIR)
                 .resolve(ProjectConstants.CENTRAL_REPOSITORY_CACHE_NAME)
-                .resolve(ProjectConstants.BALA_DIR_NAME)
-                .resolve(orgName).resolve(packageName);
+                .resolve(ProjectConstants.BALA_DIR_NAME);
         if (version.isEmpty()) {
             //TODO :  Need to check this logic whether central client will return all versions
             // or only compatible versions with the current ballerina version. If it returns all versions,
             // we need to filter the versions which are compatible with the current ballerina version.
             List<String> packageVersions = client.getPackageVersionsInCentralProxy(orgName,
-                    packageName, mavenPackageRootPath);
-            List<String> incompatibleVersions = getIncompatibleDistPkgVer(packageVersions, orgName,
-                    packageName, client, mavenPackageRootPath);
-            packageVersions.removeAll(incompatibleVersions);
+                    packageName, RepoUtils.getBallerinaShortVersion(), mavenPackageRootPath);
             List<PackageVersion> packageVersionsList = new ArrayList<>();
             packageVersions.stream().map(PackageVersion::from).forEach(packageVersionsList::add);
-            PackageVersion latest = findLatest(packageVersionsList);
+            PackageVersion latest = CommandUtil.findLatest(packageVersionsList);
+            if (latest == null) {
+                throw new MavenResolverClientException("Package not found.\n");
+            }
             version = latest.toString();
         }
-        Path mavenBalaCachePath = mavenPackageRootPath.resolve(version);
-
+        Path mavenBalaCachePath = mavenPackageRootPath.resolve(orgName).resolve(packageName).resolve(version);
+        if (Files.exists(mavenBalaCachePath)) {
+            outStream.println("Package already exists.\n");
+            return version;
+        }
         try {
             //TODO: Optimize this by using maven metadata to get platform
-            Path tmpDownloadDirectory = Files.createTempDirectory("ballerina-" + System.nanoTime());
-            client.pullPackage(orgName, packageName, version,
-                    String.valueOf(tmpDownloadDirectory.toAbsolutePath()));
-            Path balaDownloadPath = tmpDownloadDirectory.resolve(orgName).resolve(packageName).resolve(version)
-                    .resolve(packageName + "-" + version + BALA_EXTENSION);
-            Path temporaryExtractionPath = tmpDownloadDirectory.resolve(orgName).resolve(packageName)
-                    .resolve(version).resolve(PLATFORM);
-            ProjectUtils.extractBala(balaDownloadPath, temporaryExtractionPath);
-            Path packageJsonPath = temporaryExtractionPath.resolve("package.json");
-            try (BufferedReader bufferedReader = Files.newBufferedReader(packageJsonPath, StandardCharsets.UTF_8)) {
-                JsonObject resultObj = new Gson().fromJson(bufferedReader, JsonObject.class);
-                String platform = resultObj.get(PLATFORM).getAsString();
-                Path actualBalaPath = mavenBalaCachePath.resolve(platform);
-                FileUtils.copyDirectory(temporaryExtractionPath.toFile(), actualBalaPath.toFile());
-            }
+            CommandUtil.extractAndCopyBala(client, orgName, packageName, version, mavenBalaCachePath);
         } catch (IOException e) {
             throw createLauncherException(
                     "unexpected error occurred while creating package repository in bala cache: " + e.getMessage());
@@ -330,57 +307,6 @@ public class PullCommand implements BLauncherCmd {
         return version;
     }
 
-
-    private List<String> getIncompatibleDistPkgVer(List<String> versions, String org, String name,
-                                                   MavenResolverClient client, Path mavenPackageRootPath)
-            throws MavenResolverClientException {
-        List<String> incompatibleVersions = new ArrayList<>();
-        if (!versions.isEmpty()) {
-            for (String ver : versions) {
-                String packBallerinaVer = RepoUtils.getBallerinaShortVersion();
-                String packageBallerinaVer = client.getBallerinaVersionForPackage(org, name, ver, mavenPackageRootPath);
-                if (!isCompatible(packageBallerinaVer, packBallerinaVer)) {
-                    incompatibleVersions.add(ver);
-                }
-            }
-        }
-        return incompatibleVersions;
-    }
-
-    private PackageVersion findLatest(Collection<PackageVersion> packageVersions) {
-        if (packageVersions.isEmpty()) {
-            return null;
-        }
-
-        PackageVersion latestVersion = packageVersions.iterator().next();
-        for (PackageVersion pkgVersion : packageVersions) {
-            latestVersion = getLatest(latestVersion, pkgVersion);
-        }
-        return latestVersion;
-    }
-
-    private boolean isCompatible(String pkgBalVer, String distBalVer) {
-        if (pkgBalVer.equals(distBalVer) || pkgBalVer.startsWith("slbeta")) {
-            return true;
-        }
-        Version pkgSemVer;
-        Version distSemVer;
-        try {
-            pkgSemVer = Version.valueOf(pkgBalVer);
-            distSemVer = Version.valueOf(distBalVer);
-
-            if (pkgSemVer.getMajorVersion() == distSemVer.getMajorVersion()) {
-                if (pkgSemVer.getMinorVersion() == distSemVer.getMinorVersion()) {
-                    return true;
-                }
-                return !pkgSemVer.greaterThan(distSemVer);
-            }
-        } catch (UnexpectedCharacterException ignore) {
-            // SemVer incompatible versions will throw this exception.
-            // Catching this is mainly to handle slalpha versions
-        }
-        return false;
-    }
 
     private String pullFromBCentral(Settings settings, String orgName, String packageName, String version,
                                     Path packagePathInBalaCache) throws CentralClientException {
@@ -439,21 +365,8 @@ public class PullCommand implements BLauncherCmd {
                     .resolve(orgName).resolve(packageName).resolve(version);
 
             try {
-                Path tmpDownloadDirectory = Files.createTempDirectory("ballerina-" + System.nanoTime());
-                mavenResolverClient.pullPackage(orgName, packageName, version,
-                        String.valueOf(tmpDownloadDirectory.toAbsolutePath()));
-                Path balaDownloadPath = tmpDownloadDirectory.resolve(orgName).resolve(packageName).resolve(version)
-                        .resolve(packageName + "-" + version + BALA_EXTENSION);
-                Path temporaryExtractionPath = tmpDownloadDirectory.resolve(orgName).resolve(packageName)
-                        .resolve(version).resolve(PLATFORM);
-                ProjectUtils.extractBala(balaDownloadPath, temporaryExtractionPath);
-                Path packageJsonPath = temporaryExtractionPath.resolve("package.json");
-                try (BufferedReader bufferedReader = Files.newBufferedReader(packageJsonPath, StandardCharsets.UTF_8)) {
-                    JsonObject resultObj = new Gson().fromJson(bufferedReader, JsonObject.class);
-                    String platform = resultObj.get(PLATFORM).getAsString();
-                    Path actualBalaPath = mavenBalaCachePath.resolve(platform);
-                    FileUtils.copyDirectory(temporaryExtractionPath.toFile(), actualBalaPath.toFile());
-                }
+                CommandUtil.extractAndCopyBala(mavenResolverClient, orgName, packageName, version,
+                        mavenBalaCachePath);
             } catch (MavenResolverClientException e) {
                 errStream.println("unexpected error occurred while pulling package:" + e.getMessage());
                 CommandUtil.exitError(this.exitWhenFinish);
@@ -472,7 +385,7 @@ public class PullCommand implements BLauncherCmd {
             PackageLockingMode packageLockingMode;
             if (sticky) {
                 packageLockingMode = PackageLockingMode.HARD;
-            }  else {
+            } else {
                 packageLockingMode = Objects.requireNonNullElse(lockingMode, PackageLockingMode.SOFT);
             }
             BuildOptions buildOptions = BuildOptions.builder().setLockingMode(packageLockingMode).setOffline(offline)

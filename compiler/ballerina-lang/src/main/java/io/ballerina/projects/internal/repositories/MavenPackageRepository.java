@@ -17,8 +17,6 @@
  */
 package io.ballerina.projects.internal.repositories;
 
-import com.github.zafarkhaja.semver.UnexpectedCharacterException;
-import com.github.zafarkhaja.semver.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.ballerina.projects.DependencyGraph;
@@ -106,9 +104,10 @@ public class MavenPackageRepository implements PackageRepository {
         String ballerinaShortVersion = RepoUtils.getBallerinaShortVersion();
         MavenResolverClient mvnClient = new MavenResolverClient();
         if (!repository.username().isEmpty() && !repository.password().isEmpty()) {
-            mvnClient.addRepository(repository.id(), repository.url(), repository.username(), repository.password());
+            mvnClient.addRepository(repository.proxyCentral() ? "" : repository.id(), repository.url(),
+                    repository.username(), repository.password());
         } else {
-            mvnClient.addRepository(repository.id(), repository.url());
+            mvnClient.addRepository(repository.proxyCentral() ? "" : repository.id(), repository.url());
         }
 
         Settings settings;
@@ -168,9 +167,7 @@ public class MavenPackageRepository implements PackageRepository {
                 List<String> remotePackageVersions;
                 if  (isProxyCentral) {
                     remotePackageVersions = this.client.getPackageVersionsInCentralProxy(orgName, packageName,
-                            Paths.get(repoLocation));
-                    remotePackageVersions.removeAll(getIncompatibleDistPkgVer(remotePackageVersions, orgName,
-                            packageName));
+                            RepoUtils.getBallerinaShortVersion(), Paths.get(repoLocation));
                 } else {
                     remotePackageVersions = this.client.getPackageVersions(orgName, packageName,
                             Paths.get(repoLocation));
@@ -218,9 +215,8 @@ public class MavenPackageRepository implements PackageRepository {
                     List<String> packageVersions;
                     if (isProxyCentral) { // TODO : check central logic
                         packageVersions = this.client.getPackageVersionsInCentralProxy(
-                                orgName, packageName.toString(), Paths.get(repoLocation));
-                        packageVersions.removeAll(getIncompatibleDistPkgVer(packageVersions, orgName,
-                                packageName.toString()));
+                                orgName, packageName.toString(), RepoUtils.getBallerinaShortVersion(),
+                                Paths.get(repoLocation));
                     } else {
                         packageVersions = this.client.getPackageVersions(
                                 orgName, packageName.toString(), Paths.get(repoLocation));
@@ -317,7 +313,7 @@ public class MavenPackageRepository implements PackageRepository {
         if (isProxyCentral) {
             try {
                 PackageResolutionResponse pkgResolutionResp = this.client.resolveDependency(org.value(), name.value(),
-                        version.toString(), repoLocation);
+                        version.toString(), RepoUtils.getBallerinaShortVersion(), repoLocation);
                 PackageResolutionResponse.Package resolved = pkgResolutionResp.resolved().getFirst();
                 return createPackageDependencyGraph(resolved);
             } catch (MavenResolverClientException e) {
@@ -344,47 +340,8 @@ public class MavenPackageRepository implements PackageRepository {
         return this.fileSystemRepo.isPackageExists(org, name, version);
     }
 
-    private List<String> getIncompatibleDistPkgVer(List<String> versions, String org, String name) throws
-            MavenResolverClientException {
-        List<String> incompatibleVersions = new ArrayList<>();
-        if (!versions.isEmpty()) {
-            for (String ver : versions) {
-                String packBallerinaVer = RepoUtils.getBallerinaShortVersion();
-                String packageBallerinaVer = this.client.getBallerinaVersionForPackage(org, name, ver,
-                        Paths.get(repoLocation));
-                if (!isCompatible(packageBallerinaVer, packBallerinaVer)) {
-                    incompatibleVersions.add(ver);
-                }
-            }
-        }
-        return incompatibleVersions;
-    }
-
-    private boolean isCompatible(String pkgBalVer, String distBalVer) {
-        if (pkgBalVer.equals(distBalVer) || pkgBalVer.startsWith("slbeta")) {
-            return true;
-        }
-        Version pkgSemVer;
-        Version distSemVer;
-        try {
-            pkgSemVer = Version.valueOf(pkgBalVer);
-            distSemVer = Version.valueOf(distBalVer);
-
-            if (pkgSemVer.getMajorVersion() == distSemVer.getMajorVersion()) {
-                if (pkgSemVer.getMinorVersion() == distSemVer.getMinorVersion()) {
-                    return true;
-                }
-                return !pkgSemVer.greaterThan(distSemVer);
-            }
-        } catch (UnexpectedCharacterException ignore) {
-            // SemVer incompatible versions will throw this exception.
-            // Catching this is mainly to handle slalpha versions
-        }
-        return false;
-    }
-
     private Collection<PackageMetadataResponse> getPackageMetadataProxy(Collection<ResolutionRequest> requests,
-                                                                  ResolutionOptions options) {
+                                                                        ResolutionOptions options) {
         if (requests.isEmpty()) {
             return Collections.emptyList();
         }

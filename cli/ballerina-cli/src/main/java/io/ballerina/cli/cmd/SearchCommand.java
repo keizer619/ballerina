@@ -29,6 +29,8 @@ import org.ballerinalang.central.client.model.Package;
 import org.ballerinalang.central.client.model.PackageSearchResult;
 import org.ballerinalang.maven.bala.client.MavenResolverClient;
 import org.ballerinalang.maven.bala.client.MavenResolverClientException;
+import org.ballerinalang.maven.bala.client.model.PackageSearchEntry;
+import org.ballerinalang.maven.bala.client.model.PkgSearchMavenMetadata;
 import org.wso2.ballerinalang.util.RepoUtils;
 import picocli.CommandLine;
 
@@ -96,14 +98,14 @@ public class SearchCommand implements BLauncherCmd {
 
         if (argList == null || argList.isEmpty()) {
             CommandUtil.printError(this.errStream, "no keyword given", "bal search [<org>|<package>|<text>] ",
-                                   false);
+                    false);
             CommandUtil.exitError(this.exitWhenFinish);
             return;
         }
 
         if (argList.size() > 1) {
             CommandUtil.printError(this.errStream, "too many arguments", "bal search [<org>|<package>|<text>] ",
-                                   false);
+                    false);
             CommandUtil.exitError(this.exitWhenFinish);
             return;
         }
@@ -175,15 +177,15 @@ public class SearchCommand implements BLauncherCmd {
 
     private void searchInBCentral(String query, Settings settings) throws CentralClientException {
         CentralAPIClient client = new CentralAPIClient(RepoUtils.getRemoteRepoURL(),
-                                                       initializeProxy(settings.getProxy()),
-                                                        settings.getProxy().username(),
-                                                        settings.getProxy().password(),
-                                                            getAccessTokenOfCLI(settings),
-                                                        settings.getCentral().getConnectTimeout(),
-                                                        settings.getCentral().getReadTimeout(),
-                                                        settings.getCentral().getWriteTimeout(),
-                                                        settings.getCentral().getCallTimeout(),
-                                                        settings.getCentral().getMaxRetries());
+                initializeProxy(settings.getProxy()),
+                settings.getProxy().username(),
+                settings.getProxy().password(),
+                getAccessTokenOfCLI(settings),
+                settings.getCentral().getConnectTimeout(),
+                settings.getCentral().getReadTimeout(),
+                settings.getCentral().getWriteTimeout(),
+                settings.getCentral().getCallTimeout(),
+                settings.getCentral().getMaxRetries());
         boolean foundSearch = false;
         String supportedPlatform = Arrays.stream(JvmTarget.values())
                 .map(target -> target.code())
@@ -207,11 +209,11 @@ public class SearchCommand implements BLauncherCmd {
                 Path.of(REPOSITORIES_DIR, CENTRAL_REPOSITORY_CACHE_NAME, BALA_DIR_NAME));
         boolean foundSearch = false;
         query = "q=" + query;
-        MavenResolverClient.PkgSearchMavenMetadata packageSearchResult =
-                client.getPkgSearchMetadata(query, homeReposPath);
-        List<MavenResolverClient.Package> packages = packageSearchResult.getPackages();
+        PkgSearchMavenMetadata packageSearchResult =
+                client.getPkgSearchMetadata(query, RepoUtils.getBallerinaShortVersion(), homeReposPath);
+        List<PackageSearchEntry> packages = packageSearchResult.getPackages();
         List<Package> packageList = new ArrayList<>();
-        for (MavenResolverClient.Package mvnPkg : packages) {
+        for (PackageSearchEntry mvnPkg : packages) {
             Package centralPkg = new Package();
             centralPkg.setName(mvnPkg.getName());
             centralPkg.setOrganization(mvnPkg.getOrg());
@@ -222,7 +224,7 @@ public class SearchCommand implements BLauncherCmd {
             packageList.add(centralPkg);
         }
         if (!packageList.isEmpty()) {
-            printPackages(packageList, RepoUtils.getTerminalWidth());
+            printPackages(packageList, RepoUtils.getTerminalWidth(), this.outStream);
             foundSearch = true;
         }
         if (!foundSearch) {
@@ -233,10 +235,10 @@ public class SearchCommand implements BLauncherCmd {
     private static void intialiseMavenProxyClient(Repository centralProxyMavenRepository,
                                                   MavenResolverClient mavenResolverClient, Settings settings) {
         if (!centralProxyMavenRepository.username().isEmpty() && !centralProxyMavenRepository.password().isEmpty()) {
-            mavenResolverClient.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url(),
+            mavenResolverClient.addRepository("", centralProxyMavenRepository.url(),
                     centralProxyMavenRepository.username(), centralProxyMavenRepository.password());
         } else {
-            mavenResolverClient.addRepository(centralProxyMavenRepository.id(), centralProxyMavenRepository.url());
+            mavenResolverClient.addRepository("", centralProxyMavenRepository.url());
         }
         Proxy proxy = settings.getProxy();
         mavenResolverClient.setProxy(proxy.host(), proxy.port(), proxy.username(), proxy.password());
