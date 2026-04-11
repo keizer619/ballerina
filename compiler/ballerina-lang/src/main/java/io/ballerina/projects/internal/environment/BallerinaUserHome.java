@@ -82,7 +82,7 @@ public final class BallerinaUserHome {
                     Files.createDirectories(repositoryPath);
                 } catch (IOException exception) {
                     throw new ProjectException("unable to create repository: " +
-                            ProjectConstants.LOCAL_REPOSITORY_NAME);
+                            ProjectConstants.LOCAL_REPOSITORY_NAME, exception);
                 }
 
                 if (repository.proxyCentral()) {
@@ -105,7 +105,7 @@ public final class BallerinaUserHome {
             try {
                 Files.createDirectories(repositoryPath);
             } catch (IOException exception) {
-                throw new ProjectException("unable to create repository: " + repositoryPath);
+                throw new ProjectException("unable to create repository: " + repositoryPath, exception);
             }
 
             if (!customFSRepositories.containsKey(repository.id())) {
@@ -207,7 +207,8 @@ public final class BallerinaUserHome {
         try {
             Files.createDirectories(repositoryPath);
         } catch (IOException exception) {
-            throw new ProjectException("unable to create repository: " + ProjectConstants.LOCAL_REPOSITORY_NAME);
+            throw new ProjectException("unable to create repository: " + ProjectConstants.LOCAL_REPOSITORY_NAME,
+                    exception);
         }
         String ballerinaShortVersion = RepoUtils.getBallerinaShortVersion();
         return new LocalPackageRepository(environment, repositoryPath, ballerinaShortVersion);
